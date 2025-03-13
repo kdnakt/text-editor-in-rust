@@ -3,11 +3,13 @@ use crossterm::{
     event::{read, Event::Key},
     terminal::{disable_raw_mode, enable_raw_mode},
 };
-pub struct Editor {}
+pub struct Editor {
+    should_quit: bool,
+}
 
 impl Editor {
     pub fn default() -> Self {
-        Self {}
+        Self { should_quit: false }
     }
 
     pub fn run(&self) {
