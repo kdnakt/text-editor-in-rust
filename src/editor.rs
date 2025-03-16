@@ -20,7 +20,7 @@ impl Editor {
         if let Err(e) = self.repl() {
             panic!("{e:#?}");
         }
-        print!("Goodbye.\r\n");
+        Self::terminate().unwrap();
     }
 
     fn initialize() -> Result<(), std::io::Error> {
@@ -31,6 +31,10 @@ impl Editor {
     fn clear_screen() -> Result<(), std::io::Error> {
         let mut stdout = std::io::stdout();
         execute!(stdout, Clear(ClearType::All))
+    }
+
+    fn terminate() -> Result<(), std::io::Error> {
+        disable_raw_mode()
     }
 
     fn repl(&mut self) -> Result<(), std::io::Error> {
@@ -51,12 +55,20 @@ impl Editor {
                     }
                     _ => (),
                 }
+                self.refresh_screen()?;
                 if self.should_quit {
                     break;
                 }
             }
         }
-        disable_raw_mode()?;
+        Ok(())
+    }
+
+    fn refresh_screen(&self) -> Result<(), std::io::Error> {
+        if self.should_quit {
+            Self::clear_screen()?;
+            print!("Goodbye.\r\n");
+        }
         Ok(())
     }
 }
