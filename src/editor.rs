@@ -24,7 +24,16 @@ impl Editor {
 
     fn initialize() -> Result<(), std::io::Error> {
         enable_raw_mode()?;
-        Self::clear_screen()
+        Self::clear_screen()?;
+        Self::draw_rows()
+    }
+
+    fn draw_rows() -> Result<(), std::io::Error> {
+        for _ in 0..crossterm::terminal::size().unwrap().1 {
+            print!("~\r\n");
+        }
+        crossterm::cursor::MoveTo(0, 0);
+        Ok(())
     }
 
     fn clear_screen() -> Result<(), std::io::Error> {
