@@ -17,10 +17,9 @@ impl Editor {
 
     pub fn run(&mut self) {
         Self::initialize().unwrap();
-        if let Err(e) = self.repl() {
-            panic!("{e:#?}");
-        }
+        let result = self.repl();
         Self::terminate().unwrap();
+        result.unwrap();
     }
 
     fn initialize() -> Result<(), std::io::Error> {
