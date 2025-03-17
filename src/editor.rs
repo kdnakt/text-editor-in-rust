@@ -32,7 +32,8 @@ impl Editor {
         for _ in 0..crossterm::terminal::size().unwrap().1 {
             print!("~\r\n");
         }
-        crossterm::cursor::MoveTo(0, 0);
+        let command = crossterm::cursor::MoveTo(0, 0);
+        crossterm::execute!(std::io::stdout(), command)?;
         Ok(())
     }
 
