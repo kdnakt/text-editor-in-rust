@@ -2,7 +2,7 @@ use crossterm::event::KeyCode::Char;
 use crossterm::event::{Event, KeyEvent, KeyModifiers};
 use crossterm::{
     event::{read, Event::Key},
-    terminal::{disable_raw_mode, enable_raw_mode},
+    terminal::enable_raw_mode,
 };
 
 mod terminal;
@@ -20,7 +20,7 @@ impl Editor {
     pub fn run(&mut self) {
         Self::initialize().unwrap();
         let result = self.repl();
-        Self::terminate().unwrap();
+        Terminal::terminate().unwrap();
         result.unwrap();
     }
 
@@ -37,10 +37,6 @@ impl Editor {
         let command = crossterm::cursor::MoveTo(0, 0);
         crossterm::execute!(std::io::stdout(), command)?;
         Ok(())
-    }
-
-    fn terminate() -> Result<(), std::io::Error> {
-        disable_raw_mode()
     }
 
     fn repl(&mut self) -> Result<(), std::io::Error> {
