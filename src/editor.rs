@@ -1,9 +1,6 @@
 use crossterm::event::KeyCode::Char;
+use crossterm::event::{read, Event::Key};
 use crossterm::event::{Event, KeyEvent, KeyModifiers};
-use crossterm::{
-    event::{read, Event::Key},
-    terminal::enable_raw_mode,
-};
 
 mod terminal;
 use terminal::Terminal;
@@ -18,25 +15,10 @@ impl Editor {
     }
 
     pub fn run(&mut self) {
-        Self::initialize().unwrap();
+        Terminal::initialize().unwrap();
         let result = self.repl();
         Terminal::terminate().unwrap();
         result.unwrap();
-    }
-
-    fn initialize() -> Result<(), std::io::Error> {
-        enable_raw_mode()?;
-        Terminal::clear_screen()?;
-        Self::draw_rows()
-    }
-
-    fn draw_rows() -> Result<(), std::io::Error> {
-        for _ in 0..crossterm::terminal::size().unwrap().1 {
-            print!("~\r\n");
-        }
-        let command = crossterm::cursor::MoveTo(0, 0);
-        crossterm::execute!(std::io::stdout(), command)?;
-        Ok(())
     }
 
     fn repl(&mut self) -> Result<(), std::io::Error> {
