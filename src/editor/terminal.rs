@@ -26,6 +26,11 @@ impl Terminal {
         Ok(())
     }
 
+    pub fn print(string: &str) -> Result<(), Error> {
+        queue!(std::io::stdout(), crossterm::style::Print(string))?;
+        Ok(())
+    }
+
     pub fn move_cursor_to(x: u16, y: u16) -> Result<(), Error> {
         let command = crossterm::cursor::MoveTo(x, y);
         execute!(std::io::stdout(), command)?;
