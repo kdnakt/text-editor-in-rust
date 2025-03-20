@@ -38,8 +38,7 @@ impl Terminal {
     }
 
     pub fn clear_screen() -> Result<(), Error> {
-        let mut stdout = stdout();
-        execute!(stdout, Clear(ClearType::All))?;
+        execute!(stdout(), Clear(ClearType::All))?;
         Ok(())
     }
 
