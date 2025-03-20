@@ -1,5 +1,5 @@
 use crossterm::{
-    execute,
+    execute, queue,
     terminal::{disable_raw_mode, enable_raw_mode, Clear, ClearType},
 };
 
@@ -11,6 +11,16 @@ impl Terminal {
         Self::clear_screen()?;
         Self::draw_rows()?;
         Self::move_cursor_to(0, 0)?;
+        Ok(())
+    }
+
+    pub fn show_cursor() -> Result<(), std::io::Error> {
+        queue!(std::io::stdout(), crossterm::cursor::Show)?;
+        Ok(())
+    }
+
+    pub fn hide_cursor() -> Result<(), std::io::Error> {
+        queue!(std::io::stdout(), crossterm::cursor::Hide)?;
         Ok(())
     }
 
