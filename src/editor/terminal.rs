@@ -1,4 +1,4 @@
-use std::io::{stdout, Error};
+use std::io::{stdout, Error, Write};
 
 use crossterm::{
     execute, queue,
@@ -13,6 +13,7 @@ impl Terminal {
         Self::clear_screen()?;
         Self::draw_rows()?;
         Self::move_cursor_to(0, 0)?;
+        Self::execute()?;
         Ok(())
     }
 
@@ -52,7 +53,13 @@ impl Terminal {
     }
 
     pub fn terminate() -> Result<(), Error> {
+        Self::execute()?;
         disable_raw_mode()?;
+        Ok(())
+    }
+
+    pub fn execute() -> Result<(), Error> {
+        stdout().flush()?;
         Ok(())
     }
 }
