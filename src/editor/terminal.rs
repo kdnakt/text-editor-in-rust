@@ -44,7 +44,7 @@ impl Terminal {
     }
 
     pub fn clear_screen() -> Result<(), Error> {
-        execute!(stdout(), Clear(ClearType::All))?;
+        queue!(stdout(), Clear(ClearType::All))?;
         Ok(())
     }
 
