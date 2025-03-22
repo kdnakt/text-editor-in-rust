@@ -39,7 +39,7 @@ impl Terminal {
 
     pub fn move_cursor_to(x: u16, y: u16) -> Result<(), Error> {
         let command = crossterm::cursor::MoveTo(x, y);
-        execute!(stdout(), command)?;
+        queue!(stdout(), command)?;
         Ok(())
     }
 
