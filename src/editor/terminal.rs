@@ -2,8 +2,14 @@ use std::io::{stdout, Error, Write};
 
 use crossterm::{
     execute, queue,
-    terminal::{disable_raw_mode, enable_raw_mode, Clear, ClearType},
+    terminal::{disable_raw_mode, enable_raw_mode, size, Clear, ClearType},
 };
+
+#[derive(Clone, Copy)]
+pub struct Size {
+    pub height: u16,
+    pub width: u16,
+}
 
 pub struct Terminal {}
 
@@ -11,7 +17,6 @@ impl Terminal {
     pub fn initialize() -> Result<(), Error> {
         enable_raw_mode()?;
         Self::clear_screen()?;
-        Self::draw_rows()?;
         Self::move_cursor_to(0, 0)?;
         Self::execute()?;
         Ok(())
@@ -43,12 +48,8 @@ impl Terminal {
         Ok(())
     }
 
-    pub fn draw_rows() -> Result<(), Error> {
-        for _ in 0..crossterm::terminal::size().unwrap().1 {
-            print!("~\r\n");
-        }
-        let command = crossterm::cursor::MoveTo(0, 0);
-        crossterm::execute!(stdout(), command)?;
+    pub fn clear_line() -> Result<(), Error> {
+        queue!(stdout(), Clear(ClearType::CurrentLine))?;
         Ok(())
     }
 
@@ -61,5 +62,10 @@ impl Terminal {
     pub fn execute() -> Result<(), Error> {
         stdout().flush()?;
         Ok(())
+    }
+
+    pub fn size() -> Result<Size, Error> {
+        let (width, height) = size()?;
+        Ok(Size { height, width })
     }
 }

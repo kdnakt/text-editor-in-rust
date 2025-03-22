@@ -5,7 +5,7 @@ use crossterm::event::{read, Event::Key};
 use crossterm::event::{Event, KeyEvent, KeyModifiers};
 
 mod terminal;
-use terminal::Terminal;
+use terminal::{Size, Terminal};
 
 pub struct Editor {
     should_quit: bool,
@@ -58,8 +58,23 @@ impl Editor {
         if self.should_quit {
             Terminal::clear_screen()?;
             Terminal::print("Goodbye.\r\n")?;
+        } else {
+            Self::draw_rows()?;
+            Terminal::move_cursor_to(0, 0)?;
         }
         Terminal::show_cursor()?;
+        Ok(())
+    }
+
+    fn draw_rows() -> Result<(), Error> {
+        let Size { height, .. } = Terminal::size()?;
+        for current_row in 0..height {
+            Terminal::clear_line()?;
+            Terminal::print("~")?;
+            if current_row + 1 < height {
+                Terminal::print("\r\n")?;
+            }
+        }
         Ok(())
     }
 }
