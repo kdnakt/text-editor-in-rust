@@ -66,11 +66,20 @@ impl Editor {
         Ok(())
     }
 
+    fn draw_welcome_message() -> Result<(), Error> {
+        Terminal::print("Hecto editor -- version 0.1.0\r\n")?;
+        Ok(())
+    }
+
     fn draw_rows() -> Result<(), Error> {
         let Size { height, .. } = Terminal::size()?;
         for current_row in 0..height {
             Terminal::clear_line()?;
-            Terminal::print("~")?;
+            if current_row == height / 3 {
+                Self::draw_welcome_message()?;
+            } else {
+                Terminal::print("~")?;
+            }
             if current_row + 1 < height {
                 Terminal::print("\r\n")?;
             }
