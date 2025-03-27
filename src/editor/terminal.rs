@@ -1,4 +1,7 @@
-use std::io::{stdout, Error, Write};
+use std::{
+    fmt::Display,
+    io::{stdout, Error, Write},
+};
 
 use crossterm::{
     queue,
@@ -33,7 +36,7 @@ impl Terminal {
         Ok(())
     }
 
-    pub fn print(string: &str) -> Result<(), Error> {
+    pub fn print<T: Display>(string: T) -> Result<(), Error> {
         Self::queue_command(crossterm::style::Print(string))?;
         Ok(())
     }
