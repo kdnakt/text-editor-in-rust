@@ -3,6 +3,7 @@ use std::io::{stdout, Error, Write};
 use crossterm::{
     queue,
     terminal::{disable_raw_mode, enable_raw_mode, size, Clear, ClearType},
+    Command,
 };
 
 #[derive(Clone, Copy)]
@@ -23,39 +24,44 @@ impl Terminal {
     }
 
     pub fn show_cursor() -> Result<(), Error> {
-        queue!(stdout(), crossterm::cursor::Show)?;
+        Self::queue_command(crossterm::cursor::Show)?;
         Ok(())
     }
 
     pub fn hide_cursor() -> Result<(), Error> {
-        queue!(stdout(), crossterm::cursor::Hide)?;
+        Self::queue_command(crossterm::cursor::Hide)?;
         Ok(())
     }
 
     pub fn print(string: &str) -> Result<(), Error> {
-        queue!(stdout(), crossterm::style::Print(string))?;
+        Self::queue_command(crossterm::style::Print(string))?;
         Ok(())
     }
 
     pub fn move_cursor_to(x: u16, y: u16) -> Result<(), Error> {
         let command = crossterm::cursor::MoveTo(x, y);
-        queue!(stdout(), command)?;
+        Self::queue_command(command)?;
         Ok(())
     }
 
     pub fn clear_screen() -> Result<(), Error> {
-        queue!(stdout(), Clear(ClearType::All))?;
+        Self::queue_command(Clear(ClearType::All))?;
         Ok(())
     }
 
     pub fn clear_line() -> Result<(), Error> {
-        queue!(stdout(), Clear(ClearType::CurrentLine))?;
+        Self::queue_command(Clear(ClearType::CurrentLine))?;
         Ok(())
     }
 
     pub fn terminate() -> Result<(), Error> {
         Self::execute()?;
         disable_raw_mode()?;
+        Ok(())
+    }
+
+    pub fn queue_command<T: Command>(command: T) -> Result<(), Error> {
+        queue!(stdout(), command)?;
         Ok(())
     }
 
