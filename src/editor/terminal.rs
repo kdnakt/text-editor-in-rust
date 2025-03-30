@@ -15,6 +15,7 @@ pub struct Size {
     pub width: usize,
 }
 
+/// Represents the Terminal.
 pub struct Terminal {}
 
 impl Terminal {
