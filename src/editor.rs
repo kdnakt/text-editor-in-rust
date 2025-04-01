@@ -5,7 +5,7 @@ use crossterm::event::{read, Event::Key};
 use crossterm::event::{Event, KeyEvent, KeyModifiers};
 
 mod terminal;
-use terminal::{Size, Terminal};
+use terminal::{Position, Size, Terminal};
 
 const NAME: &str = env!("CARGO_PKG_NAME");
 const VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -62,7 +62,7 @@ impl Editor {
             Terminal::print("Goodbye.\r\n")?;
         } else {
             Self::draw_rows()?;
-            Terminal::move_cursor_to(0, 0)?;
+            Terminal::move_cursor_to(Position { x: 0, y: 0 })?;
         }
         Terminal::show_cursor()?;
         Terminal::execute()?;

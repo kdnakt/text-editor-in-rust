@@ -4,6 +4,7 @@ use std::{
 };
 
 use crossterm::{
+    cursor::MoveTo,
     queue,
     terminal::{disable_raw_mode, enable_raw_mode, size, Clear, ClearType},
     Command,
@@ -28,7 +29,7 @@ impl Terminal {
     pub fn initialize() -> Result<(), Error> {
         enable_raw_mode()?;
         Self::clear_screen()?;
-        Self::move_cursor_to(0, 0)?;
+        Self::move_cursor_to(Position { x: 0, y: 0 })?;
         Self::execute()?;
         Ok(())
     }
@@ -48,8 +49,8 @@ impl Terminal {
         Ok(())
     }
 
-    pub fn move_cursor_to(x: u16, y: u16) -> Result<(), Error> {
-        let command = crossterm::cursor::MoveTo(x, y);
+    pub fn move_cursor_to(position: Position) -> Result<(), Error> {
+        let command = MoveTo(position.x, position.y);
         Self::queue_command(command)?;
         Ok(())
     }
