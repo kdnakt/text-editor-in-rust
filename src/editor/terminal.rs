@@ -15,6 +15,12 @@ pub struct Size {
     pub width: usize,
 }
 
+#[derive(Clone, Copy)]
+pub struct Position {
+    pub x: u16,
+    pub y: u16,
+}
+
 /// Represents the Terminal.
 pub struct Terminal {}
 
