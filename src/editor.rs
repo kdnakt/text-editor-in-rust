@@ -10,15 +10,19 @@ use terminal::{Position, Size, Terminal};
 const NAME: &str = env!("CARGO_PKG_NAME");
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
+#[derive(Clone, Copy, Default)]
+struct Location {
+    x: usize,
+    y: usize,
+}
+
+#[derive(Default)]
 pub struct Editor {
     should_quit: bool,
+    location: Location,
 }
 
 impl Editor {
-    pub fn default() -> Self {
-        Self { should_quit: false }
-    }
-
     pub fn run(&mut self) {
         Terminal::initialize().unwrap();
         let result = self.repl();
