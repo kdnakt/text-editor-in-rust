@@ -66,7 +66,7 @@ impl Editor {
             Terminal::print("Goodbye.\r\n")?;
         } else {
             Self::draw_rows()?;
-            Terminal::move_cursor_to(Position { x: 0, y: 0 })?;
+            Terminal::move_cursor_to(Position::default())?;
         }
         Terminal::show_cursor()?;
         Terminal::execute()?;

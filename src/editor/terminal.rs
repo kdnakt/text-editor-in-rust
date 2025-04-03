@@ -16,7 +16,7 @@ pub struct Size {
     pub width: usize,
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Default)]
 pub struct Position {
     pub x: u16,
     pub y: u16,
@@ -29,7 +29,7 @@ impl Terminal {
     pub fn initialize() -> Result<(), Error> {
         enable_raw_mode()?;
         Self::clear_screen()?;
-        Self::move_cursor_to(Position { x: 0, y: 0 })?;
+        Self::move_cursor_to(Position::default())?;
         Self::execute()?;
         Ok(())
     }
