@@ -1,3 +1,4 @@
+use std::cmp::min;
 use std::io::Error;
 
 use crossterm::event::KeyCode::{self, Char};
@@ -43,6 +44,35 @@ impl Editor {
     }
 
     fn move_point(&mut self, key_code: KeyCode) -> Result<(), Error> {
+        let Location { mut x, mut y } = self.location;
+        let Size { height, width } = Terminal::size()?;
+        match key_code {
+            KeyCode::Up => {
+                y = y.saturating_sub(1);
+            }
+            KeyCode::Down => {
+                y = min(height.saturating_sub(1), y.saturating_add(1));
+            }
+            KeyCode::Left => {
+                x = x.saturating_sub(1);
+            }
+            KeyCode::Right => {
+                x = min(width.saturating_sub(1), x.saturating_add(1));
+            }
+            KeyCode::PageUp => {
+                y = 0;
+            }
+            KeyCode::PageDown => {
+                y = height.saturating_sub(1);
+            }
+            KeyCode::Home => {
+                x = 0;
+            }
+            KeyCode::End => {
+                x = width.saturating_sub(1);
+            }
+            _ => (),
+        }
         Ok(())
     }
 
