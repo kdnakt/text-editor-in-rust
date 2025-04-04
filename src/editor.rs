@@ -1,8 +1,8 @@
 use std::io::Error;
 
-use crossterm::event::KeyCode::Char;
+use crossterm::event::KeyCode::{self, Char};
 use crossterm::event::{read, Event::Key};
-use crossterm::event::{Event, KeyEvent, KeyModifiers};
+use crossterm::event::{Event, KeyEvent, KeyEventKind, KeyModifiers};
 
 mod terminal;
 use terminal::{Position, Size, Terminal};
@@ -42,21 +42,36 @@ impl Editor {
         Ok(())
     }
 
-    fn evaluate_event(&mut self, event: &Event) {
+    fn move_point(&mut self, key_code: KeyCode) -> Result<(), Error> {
+        Ok(())
+    }
+
+    fn evaluate_event(&mut self, event: &Event) -> Result<(), Error> {
         if let Key(KeyEvent {
             code,
             modifiers,
-            kind,
-            state,
+            kind: KeyEventKind::Press,
+            ..
         }) = event
         {
             match code {
                 Char('q') if *modifiers == KeyModifiers::CONTROL => {
                     self.should_quit = true;
                 }
+                KeyCode::Up
+                | KeyCode::Down
+                | KeyCode::Left
+                | KeyCode::Right
+                | KeyCode::PageDown
+                | KeyCode::PageUp
+                | KeyCode::End
+                | KeyCode::Home => {
+                    self.move_point(*code)?;
+                }
                 _ => (),
             }
         }
+        Ok(())
     }
 
     fn refresh_screen(&self) -> Result<(), Error> {
