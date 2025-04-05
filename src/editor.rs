@@ -105,15 +105,18 @@ impl Editor {
     }
 
     fn refresh_screen(&self) -> Result<(), Error> {
-        Terminal::hide_cursor()?;
+        Terminal::hide_caret()?;
         if self.should_quit {
             Terminal::clear_screen()?;
             Terminal::print("Goodbye.\r\n")?;
         } else {
             Self::draw_rows()?;
-            Terminal::move_cursor_to(Position::default())?;
+            Terminal::move_caret_to(Position {
+                col: self.location.x,
+                row: self.location.y,
+            })?;
         }
-        Terminal::show_cursor()?;
+        Terminal::show_caret()?;
         Terminal::execute()?;
         Ok(())
     }

@@ -18,8 +18,8 @@ pub struct Size {
 
 #[derive(Clone, Copy, Default)]
 pub struct Position {
-    pub x: u16,
-    pub y: u16,
+    pub col: usize,
+    pub row: usize,
 }
 
 /// Represents the Terminal.
@@ -29,17 +29,17 @@ impl Terminal {
     pub fn initialize() -> Result<(), Error> {
         enable_raw_mode()?;
         Self::clear_screen()?;
-        Self::move_cursor_to(Position::default())?;
+        Self::move_caret_to(Position::default())?;
         Self::execute()?;
         Ok(())
     }
 
-    pub fn show_cursor() -> Result<(), Error> {
+    pub fn show_caret() -> Result<(), Error> {
         Self::queue_command(crossterm::cursor::Show)?;
         Ok(())
     }
 
-    pub fn hide_cursor() -> Result<(), Error> {
+    pub fn hide_caret() -> Result<(), Error> {
         Self::queue_command(crossterm::cursor::Hide)?;
         Ok(())
     }
@@ -49,8 +49,8 @@ impl Terminal {
         Ok(())
     }
 
-    pub fn move_cursor_to(position: Position) -> Result<(), Error> {
-        let command = MoveTo(position.x, position.y);
+    pub fn move_caret_to(position: Position) -> Result<(), Error> {
+        let command = MoveTo(position.col as u16, position.row as u16);
         Self::queue_command(command)?;
         Ok(())
     }
