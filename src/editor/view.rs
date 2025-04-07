@@ -2,13 +2,14 @@ use std::io::Error;
 
 use super::terminal::{Size, Terminal};
 
+#[derive(Default)]
 pub struct View;
 
 const NAME: &str = env!("CARGO_PKG_NAME");
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 impl View {
-    pub fn render() -> Result<(), Error> {
+    pub fn render(&self) -> Result<(), Error> {
         let Size { height, .. } = Terminal::size()?;
         for current_row in 0..height {
             Terminal::clear_line()?;
