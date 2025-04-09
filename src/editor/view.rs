@@ -48,4 +48,10 @@ impl View {
         Terminal::print(welcome_message)?;
         Ok(())
     }
+
+    pub fn load(&mut self, file_name: &str) {
+        if let Ok(buffers) = Buffer::load(file_name) {
+            self.buffer = buffers;
+        }
+    }
 }
