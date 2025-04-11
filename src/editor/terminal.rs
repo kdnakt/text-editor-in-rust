@@ -10,7 +10,7 @@ use crossterm::{
     Command,
 };
 
-#[derive(Clone, Copy)]
+#[derive(Default, Clone, Copy)]
 pub struct Size {
     pub height: usize,
     pub width: usize,

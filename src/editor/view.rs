@@ -5,9 +5,10 @@ use super::terminal::{Size, Terminal};
 mod buffer;
 use buffer::Buffer;
 
-#[derive(Default)]
 pub struct View {
     buffer: Buffer,
+    needs_redraw: bool,
+    size: Size,
 }
 
 const NAME: &str = env!("CARGO_PKG_NAME");
@@ -15,7 +16,7 @@ const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 impl View {
     pub fn render_welcome_screen(&self) -> Result<(), Error> {
-        let Size { height, .. } = Terminal::size()?;
+        let Size { height, .. } = self.size;
         for current_row in 0..height {
             Terminal::clear_line()?;
             #[allow(clippy::integer_division)]
@@ -32,7 +33,7 @@ impl View {
     }
 
     pub fn render_buffer(&self) -> Result<(), Error> {
-        let Size { height, .. } = Terminal::size()?;
+        let Size { height, .. } = self.size;
         for current_row in 0..height {
             Terminal::clear_line()?;
             if let Some(line) = self.buffer.lines.get(current_row) {
@@ -70,6 +71,18 @@ impl View {
     pub fn load(&mut self, file_name: &str) {
         if let Ok(buffers) = Buffer::load(file_name) {
             self.buffer = buffers;
+            self.needs_redraw = true;
+        }
+    }
+}
+
+impl Default for View {
+    fn default() -> Self {
+        let size = Terminal::size().unwrap_or_default();
+        Self {
+            buffer: Buffer::default(),
+            needs_redraw: true,
+            size,
         }
     }
 }
