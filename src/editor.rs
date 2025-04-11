@@ -47,7 +47,7 @@ impl Editor {
                 break;
             }
             let event = read()?;
-            self.evaluate_event(&event);
+            self.evaluate_event(event);
         }
         Ok(())
     }
@@ -86,7 +86,8 @@ impl Editor {
         Ok(())
     }
 
-    fn evaluate_event(&mut self, event: &Event) -> Result<(), Error> {
+    #[allow(clippy::needless_pass_by_value)]
+    fn evaluate_event(&mut self, event: Event) -> Result<(), Error> {
         if let Key(KeyEvent {
             code,
             modifiers,
@@ -95,7 +96,7 @@ impl Editor {
         }) = event
         {
             match code {
-                Char('q') if *modifiers == KeyModifiers::CONTROL => {
+                Char('q') if modifiers == KeyModifiers::CONTROL => {
                     self.should_quit = true;
                 }
                 KeyCode::Up
@@ -106,7 +107,7 @@ impl Editor {
                 | KeyCode::PageUp
                 | KeyCode::End
                 | KeyCode::Home => {
-                    self.move_point(*code)?;
+                    self.move_point(code)?;
                 }
                 _ => (),
             }
@@ -114,7 +115,7 @@ impl Editor {
         Ok(())
     }
 
-    fn refresh_screen(&self) -> Result<(), Error> {
+    fn refresh_screen(&mut self) -> Result<(), Error> {
         Terminal::hide_caret()?;
         Terminal::move_caret_to(Position::default())?;
         if self.should_quit {
