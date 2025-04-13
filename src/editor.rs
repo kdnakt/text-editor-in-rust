@@ -88,29 +88,39 @@ impl Editor {
 
     #[allow(clippy::needless_pass_by_value)]
     fn evaluate_event(&mut self, event: Event) -> Result<(), Error> {
-        if let Key(KeyEvent {
-            code,
-            modifiers,
-            kind: KeyEventKind::Press,
-            ..
-        }) = event
-        {
-            match code {
-                Char('q') if modifiers == KeyModifiers::CONTROL => {
+        match event {
+            Key(KeyEvent {
+                code,
+                modifiers,
+                kind: KeyEventKind::Press,
+                ..
+            }) => match (code, modifiers) {
+                (Char('q'), KeyModifiers::CONTROL) => {
                     self.should_quit = true;
                 }
-                KeyCode::Up
-                | KeyCode::Down
-                | KeyCode::Left
-                | KeyCode::Right
-                | KeyCode::PageDown
-                | KeyCode::PageUp
-                | KeyCode::End
-                | KeyCode::Home => {
+                (
+                    KeyCode::Up
+                    | KeyCode::Down
+                    | KeyCode::Left
+                    | KeyCode::Right
+                    | KeyCode::PageDown
+                    | KeyCode::PageUp
+                    | KeyCode::End
+                    | KeyCode::Home,
+                    _,
+                ) => {
                     self.move_point(code)?;
                 }
-                _ => (),
+                _ => {}
+            },
+            Event::Resize(width_u16, height_u16) => {
+                #[allow(clippy::as_conversions)]
+                let height = height_u16 as usize;
+                #[allow(clippy::as_conversions)]
+                let width = width_u16 as usize;
+                self.view.resize(Size { height, width });
             }
+            _ => {}
         }
         Ok(())
     }

@@ -15,6 +15,11 @@ const NAME: &str = env!("CARGO_PKG_NAME");
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 impl View {
+    pub fn resize(&mut self, to: Size) {
+        self.size = to;
+        self.needs_redraw = true;
+    }
+
     pub fn render_welcome_screen(&self) -> Result<(), Error> {
         let Size { height, .. } = self.size;
         for current_row in 0..height {
