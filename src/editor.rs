@@ -1,5 +1,7 @@
 use std::cmp::min;
+use std::env;
 use std::io::Error;
+use std::panic::set_hook;
 
 use crossterm::event::KeyCode::{self, Char};
 use crossterm::event::{read, Event::Key};
@@ -17,7 +19,6 @@ struct Location {
     y: usize,
 }
 
-#[derive(Default)]
 pub struct Editor {
     should_quit: bool,
     location: Location,
@@ -25,6 +26,25 @@ pub struct Editor {
 }
 
 impl Editor {
+    pub fn new() -> Result<Self, Error> {
+        let current_hook = std::panic::take_hook();
+        set_hook(Box::new(move |panic_info| {
+            let _ = Terminal::terminate();
+            current_hook(panic_info);
+        }));
+        Terminal::initialize()?;
+        let mut view = View::default();
+        let args: Vec<String> = env::args().collect();
+        if let Some(file_name) = args.get(1) {
+            view.load(file_name);
+        }
+        Ok(Self {
+            should_quit: false,
+            location: Location::default(),
+            view,
+        })
+    }
+
     pub fn run(&mut self) {
         Terminal::initialize().unwrap();
         self.handle_args();
