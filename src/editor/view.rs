@@ -1,14 +1,21 @@
 use std::io::Error;
 
-use super::terminal::{Position, Size, Terminal};
+use super::{
+    editorcommand::{Direction, EditorCommand},
+    terminal::{Position, Size, Terminal},
+};
 
 mod buffer;
 use buffer::Buffer;
+mod location;
+use location::Location;
 
 pub struct View {
     buffer: Buffer,
     needs_redraw: bool,
     size: Size,
+    location: Location,
+    scroll_offset: Location,
 }
 
 const NAME: &str = env!("CARGO_PKG_NAME");
@@ -75,6 +82,50 @@ impl View {
             self.needs_redraw = true;
         }
     }
+
+    pub fn get_position(&self) -> Position {
+        self.location.subtract(&self.scroll_offset).into()
+    }
+
+    pub fn handle_command(&mut self, command: EditorCommand) {
+        match command {
+            EditorCommand::Resize(size) => self.resize(size),
+            EditorCommand::Move(direction) => self.move_text_location(&direction),
+            EditorCommand::Quit => {}
+        }
+    }
+
+    fn move_text_location(&mut self, direction: &Direction) {
+        let Location { mut x, mut y } = self.location;
+        let Size { height, width } = self.size;
+        match direction {
+            Direction::Up => {
+                y = y.saturating_sub(1);
+            }
+            Direction::Down => {
+                y = y.saturating_add(1);
+            }
+            Direction::Left => {
+                x = x.saturating_sub(1);
+            }
+            Direction::Right => {
+                x = x.saturating_add(1);
+            }
+            Direction::PageUp => {
+                y = 0;
+            }
+            Direction::PageDown => {
+                y = height.saturating_sub(1);
+            }
+            Direction::Home => {
+                x = 0;
+            }
+            Direction::End => {
+                x = width.saturating_sub(1);
+            }
+        }
+        self.location = Location { x, y };
+    }
 }
 
 impl Default for View {
@@ -84,6 +135,8 @@ impl Default for View {
             buffer: Buffer::default(),
             needs_redraw: true,
             size,
+            location: Location::default(),
+            scroll_offset: Location::default(),
         }
     }
 }

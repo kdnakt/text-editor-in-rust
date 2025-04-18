@@ -1,10 +1,9 @@
 use crate::editor::terminal::Position;
 
-
 #[derive(Clone, Copy, Default)]
-struct Location {
-    x: usize,
-    y: usize,
+pub struct Location {
+    pub x: usize,
+    pub y: usize,
 }
 
 impl From<Location> for Position {
