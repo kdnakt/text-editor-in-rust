@@ -9,6 +9,8 @@ mod buffer;
 use buffer::Buffer;
 mod location;
 use location::Location;
+mod line;
+use line::Line;
 
 pub struct View {
     buffer: Buffer,
@@ -27,40 +29,35 @@ impl View {
         self.needs_redraw = true;
     }
 
-    pub fn render_line(at: usize, line_text: &str) -> Result<(), Error> {
-        Terminal::move_caret_to(Position { row: at, col: 0 })?;
-        Terminal::clear_line()?;
-        Terminal::print(line_text)?;
-        Ok(())
+    pub fn render_line(at: usize, line_text: &str) {
+        let result = Terminal::print_row(at, line_text);
+        debug_assert!(result.is_ok(), "Failed to render line");
     }
 
-    pub fn render(&mut self) -> Result<(), Error> {
+    pub fn render(&mut self) {
         if !self.needs_redraw {
-            return Ok(());
+            return;
         }
         let Size { height, width } = self.size;
         if height == 0 || width == 0 {
-            return Ok(());
+            return;
         }
         #[allow(clippy::integer_division)]
         let vertical_center = height / 3;
+        let top = self.scroll_offset.y;
 
         for current_row in 0..height {
-            if let Some(line) = self.buffer.lines.get(current_row) {
-                let truncated_line = if line.len() >= width {
-                    &line[..width]
-                } else {
-                    line
-                };
-                Self::render_line(current_row, truncated_line)?;
+            if let Some(line) = self.buffer.lines.get(current_row.saturating_add(top)) {
+                let left = self.scroll_offset.x;
+                let right = self.scroll_offset.x.saturating_add(width);
+                Self::render_line(current_row, &line.get(left..right));
             } else if current_row == vertical_center && self.buffer.is_empty() {
-                Self::render_line(current_row, &Self::build_welcome_message(width))?;
+                Self::render_line(current_row, &Self::build_welcome_message(width));
             } else {
-                Self::render_line(current_row, "~")?;
+                Self::render_line(current_row, "~");
             }
         }
         self.needs_redraw = false;
-        Ok(())
     }
 
     fn build_welcome_message(width: usize) -> String {
@@ -95,9 +92,10 @@ impl View {
         }
     }
 
+    #[allow(clippy::arithmetic_side_effects)]
     fn move_text_location(&mut self, direction: &Direction) {
         let Location { mut x, mut y } = self.location;
-        let Size { height, width } = self.size;
+        let Size { height, .. } = self.size;
         match direction {
             Direction::Up => {
                 y = y.saturating_sub(1);
@@ -106,24 +104,32 @@ impl View {
                 y = y.saturating_add(1);
             }
             Direction::Left => {
-                x = x.saturating_sub(1);
+                if x > 0 {
+                    x -= 1;
+                } else if y > 0 {
+                    y -= 1;
+                    x = self.buffer.lines.get(y).map_or(0, Line::len);
+                }
             }
             Direction::Right => {
+                let width = self.buffer.lines.get(y).map_or(0, Line::len);
                 x = x.saturating_add(1);
             }
             Direction::PageUp => {
-                y = 0;
+                y = y.saturating_sub(height).saturating_sub(1);
             }
             Direction::PageDown => {
-                y = height.saturating_sub(1);
+                y = y.saturating_add(height).saturating_sub(1);
             }
             Direction::Home => {
                 x = 0;
             }
             Direction::End => {
-                x = width.saturating_sub(1);
+                x = self.buffer.lines.get(y).map_or(0, Line::len);
             }
         }
+        x = self.buffer.lines.get(y).map_or(0, |line| line.len()).min(x);
+        y = y.min(self.buffer.lines.len());
         self.location = Location { x, y };
     }
 }

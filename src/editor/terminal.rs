@@ -49,6 +49,13 @@ impl Terminal {
         Ok(())
     }
 
+    pub fn print_row(row: usize, line_text: &str) -> Result<(), Error> {
+        Self::move_caret_to(Position { col: 0, row })?;
+        Self::clear_line()?;
+        Self::print(line_text)?;
+        Ok(())
+    }
+
     pub fn move_caret_to(position: Position) -> Result<(), Error> {
         let command = MoveTo(position.col as u16, position.row as u16);
         Self::queue_command(command)?;
