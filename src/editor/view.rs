@@ -157,6 +157,7 @@ impl View {
         x = self.buffer.lines.get(y).map_or(0, |line| line.len()).min(x);
         y = y.min(self.buffer.lines.len());
         self.location = Location { x, y };
+        self.scroll_location_into_view();
     }
 }
 
