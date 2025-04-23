@@ -1,5 +1,3 @@
-use std::io::Error;
-
 use super::{
     editorcommand::{Direction, EditorCommand},
     terminal::{Position, Size, Terminal},
@@ -26,7 +24,35 @@ const VERSION: &str = env!("CARGO_PKG_VERSION");
 impl View {
     pub fn resize(&mut self, to: Size) {
         self.size = to;
+        self.scroll_location_into_view();
         self.needs_redraw = true;
+    }
+
+    fn scroll_location_into_view(&mut self) {
+        let Size { height, width } = self.size;
+        let Location { x, y } = self.location;
+
+        let mut offset_changed = false;
+
+        // vertical scroll
+        if y < self.scroll_offset.y {
+            self.scroll_offset.y = y;
+            offset_changed = true;
+        } else if y >= self.scroll_offset.y.saturating_add(height) {
+            self.scroll_offset.y = y.saturating_sub(height).saturating_add(1);
+            offset_changed = true;
+        }
+
+        // horizontal scroll
+        if x < self.scroll_offset.x {
+            self.scroll_offset.x = x;
+            offset_changed = true;
+        } else if x >= self.scroll_offset.x.saturating_add(width) {
+            self.scroll_offset.x = x.saturating_sub(width).saturating_add(1);
+            offset_changed = true;
+        }
+
+        self.needs_redraw = offset_changed;
     }
 
     pub fn render_line(at: usize, line_text: &str) {
