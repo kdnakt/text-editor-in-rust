@@ -139,7 +139,12 @@ impl View {
             }
             Direction::Right => {
                 let width = self.buffer.lines.get(y).map_or(0, Line::len);
-                x = x.saturating_add(1);
+                if x < width {
+                    x += 1;
+                } else if y < self.buffer.lines.len() {
+                    y = y.saturating_add(1);
+                    x = 0;
+                }
             }
             Direction::PageUp => {
                 y = y.saturating_sub(height).saturating_sub(1);
