@@ -14,7 +14,7 @@ pub struct View {
     buffer: Buffer,
     needs_redraw: bool,
     size: Size,
-    location: Location,
+    text_location: Location,
     scroll_offset: Location,
 }
 
@@ -30,7 +30,7 @@ impl View {
 
     fn scroll_location_into_view(&mut self) {
         let Size { height, width } = self.size;
-        let Location { x, y } = self.location;
+        let Location { x, y } = self.text_location;
 
         let mut offset_changed = false;
 
@@ -107,7 +107,7 @@ impl View {
     }
 
     pub fn get_position(&self) -> Position {
-        self.location.subtract(&self.scroll_offset).into()
+        self.text_location.subtract(&self.scroll_offset).into()
     }
 
     pub fn handle_command(&mut self, command: EditorCommand) {
@@ -120,7 +120,7 @@ impl View {
 
     #[allow(clippy::arithmetic_side_effects)]
     fn move_text_location(&mut self, direction: &Direction) {
-        let Location { mut x, mut y } = self.location;
+        let Location { mut x, mut y } = self.text_location;
         let Size { height, .. } = self.size;
         match direction {
             Direction::Up => {
@@ -161,7 +161,7 @@ impl View {
         }
         x = self.buffer.lines.get(y).map_or(0, |line| line.len().min(x));
         y = y.min(self.buffer.lines.len());
-        self.location = Location { x, y };
+        self.text_location = Location { x, y };
         self.scroll_location_into_view();
     }
 }
@@ -173,7 +173,7 @@ impl Default for View {
             buffer: Buffer::default(),
             needs_redraw: true,
             size,
-            location: Location::default(),
+            text_location: Location::default(),
             scroll_offset: Location::default(),
         }
     }
