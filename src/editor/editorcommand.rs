@@ -43,7 +43,7 @@ impl TryFrom<Event> for EditorCommand {
                 let width = width_u16 as usize;
                 #[allow(clippy::as_conversions)]
                 let height = height_u16 as usize;
-                Ok(Self::Resize(Size { width, height }))
+                Ok(Self::Resize(Size { height, width }))
             }
             _ => Err(format!("Unsupported event: {event:?}")),
         }
