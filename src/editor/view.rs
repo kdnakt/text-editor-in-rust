@@ -41,7 +41,7 @@ impl View {
     fn scroll_vertically(&mut self, to: usize) {
         let Size { height, .. } = self.size;
 
-        let mut offset_changed = if to < self.scroll_offset.row {
+        let offset_changed = if to < self.scroll_offset.row {
             self.scroll_offset.row = to;
             true
         } else if to >= self.scroll_offset.row.saturating_add(height) {
