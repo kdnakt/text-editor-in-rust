@@ -1,3 +1,4 @@
+use std::ops::Range;
 
 use unicode_segmentation::UnicodeSegmentation;
 use unicode_width::UnicodeWidthStr;
@@ -51,8 +52,44 @@ impl Line {
         Self { fragments }
     }
 
+    pub fn get_visible_graphemes(&self, range: Range<usize>) -> String {
+        if range.start >= range.end {
+            return String::new();
+        }
+
+        let mut result = String::new();
+        let mut current_pos = 0;
+        for fragment in &self.fragments {
+            let fragment_end = fragment.rendered_width.saturating_add(current_pos);
+            if current_pos >= range.end {
+                break;
+            }
+            if fragment_end > range.start {
+                if fragment_end > range.end || current_pos < range.start {
+                    result.push('⋯');
+                } else if let Some(char) = fragment.replacement {
+                    result.push(char);
+                } else {
+                    result.push_str(&fragment.grapheme);
+                }
+            }
+            current_pos = fragment_end;
+        }
+        result
+    }
+
     pub fn grapheme_count(&self) -> usize {
         self.fragments.len()
     }
 
+    pub fn width_until(&self, grapheme_index: usize) -> usize {
+        self.fragments
+            .iter()
+            .take(grapheme_index)
+            .map(|fragment| match fragment.rendered_width {
+                GraphemeWidth::Half => 1,
+                GraphemeWidth::Full => 2,
+            })
+            .sum()
+    }
 }
