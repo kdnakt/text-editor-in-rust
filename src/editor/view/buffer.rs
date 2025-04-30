@@ -1,6 +1,6 @@
 use std::{fs::read_to_string, io::Error};
 
-use super::line::Line;
+use super::{line::Line, Location};
 
 #[derive(Default)]
 pub struct Buffer {
@@ -15,6 +15,17 @@ impl Buffer {
             lines.push(Line::from(value));
         }
         Ok(Self { lines })
+    }
+
+    pub fn insert_char(&mut self, character: char, at: Location) {
+        if at.line_index > self.lines.len() {
+            return;
+        }
+        if at.line_index == self.lines.len() {
+            self.lines.push(Line::from(&character.to_string()));
+        } else if let Some(line) = self.lines.get_mut(at.line_index) {
+            line.insert_char(character, at.grapheme_index);
+        }
     }
 
     pub fn is_empty(&self) -> bool {
