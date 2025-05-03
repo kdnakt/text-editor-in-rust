@@ -137,6 +137,8 @@ impl View {
             EditorCommand::Move(direction) => self.move_text_location(&direction),
             EditorCommand::Quit => {}
             EditorCommand::Insert(character) => self.insert_char(character),
+            EditorCommand::Delete => self.delete(),
+            EditorCommand::Backspace => self.backspace(),
         }
     }
 
@@ -157,6 +159,14 @@ impl View {
             self.move_right();
         }
         self.needs_redraw = true;
+    }
+
+    fn backspace(&mut self) {
+        todo!()
+    }
+
+    fn delete(&mut self) {
+        todo!()
     }
 
     #[allow(clippy::arithmetic_side_effects)]
