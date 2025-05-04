@@ -28,6 +28,21 @@ impl Buffer {
         }
     }
 
+    pub fn delete(&mut self, at: Location) {
+        if let Some(line) = self.lines.get(at.line_index) {
+            if at.grapheme_index >= line.grapheme_count()
+                && self.lines.len() > at.line_index.saturating_add(1)
+            {
+                let next_line = self.lines.remove(at.line_index.saturating_add(1));
+                #[allow(clippy::indexing_slicing)]
+                self.lines[at.line_index].append(&next_line);
+            } else {
+                #[allow(clippy::indexing_slicing)]
+                self.lines[at.line_index].delete(at.grapheme_index);
+            }
+        }
+    }
+
     pub fn is_empty(&self) -> bool {
         self.lines.is_empty()
     }
