@@ -35,6 +35,7 @@ impl TryFrom<Event> for EditorCommand {
                 (KeyCode::Char(character), KeyModifiers::CONTROL | KeyModifiers::SHIFT) => {
                     Ok(Self::Insert(character))
                 }
+                (KeyCode::Tab, _) => Ok(Self::Insert('\t')),
                 (KeyCode::Up, _) => Ok(Self::Move(Direction::Up)),
                 (KeyCode::Down, _) => Ok(Self::Move(Direction::Down)),
                 (KeyCode::Left, _) => Ok(Self::Move(Direction::Left)),
