@@ -44,7 +44,7 @@ impl Buffer {
     }
 
     pub fn insert_newline(&mut self, at: Location) {
-        if at.line_index >= self.height() {
+        if at.line_index == self.height() {
             self.lines.push(Line::default());
         } else if let Some(line) = self.lines.get_mut(at.line_index) {
             let new_line = line.split(at.grapheme_index);
