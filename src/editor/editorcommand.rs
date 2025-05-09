@@ -35,7 +35,7 @@ impl TryFrom<Event> for EditorCommand {
             }) => match (code, modifiers) {
                 (KeyCode::Char('q'), KeyModifiers::CONTROL) => Ok(Self::Quit),
                 (KeyCode::Char('s'), KeyModifiers::CONTROL) => Ok(Self::Save),
-                (KeyCode::Char(character), KeyModifiers::CONTROL | KeyModifiers::SHIFT) => {
+                (KeyCode::Char(character), KeyModifiers::NONE | KeyModifiers::SHIFT) => {
                     Ok(Self::Insert(character))
                 }
                 (KeyCode::Tab, _) => Ok(Self::Insert('\t')),
