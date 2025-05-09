@@ -13,6 +13,14 @@ use editorcommand::EditorCommand;
 use terminal::Terminal;
 use view::View;
 
+#[derive(Default)]
+pub struct DocumentStatus {
+    total_lines: usize,
+    current_line_index: usize,
+    is_modified: bool,
+    file_name: Option<String>,
+}
+
 pub struct Editor {
     should_quit: bool,
     view: View,
