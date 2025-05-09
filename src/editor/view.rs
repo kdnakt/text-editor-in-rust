@@ -118,6 +118,10 @@ impl View {
         }
     }
 
+    fn save(&self) {
+        let _ = self.buffer.save();
+    }
+
     pub fn get_position(&self) -> Position {
         self.text_location_to_position()
             .saturating_sub(self.scroll_offset)
@@ -140,6 +144,7 @@ impl View {
             EditorCommand::Delete => self.delete(),
             EditorCommand::Backspace => self.backspace(),
             EditorCommand::Enter => self.insert_newline(),
+            EditorCommand::Save => self.save(),
         }
     }
 
