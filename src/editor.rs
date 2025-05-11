@@ -6,6 +6,7 @@ use crossterm::event::read;
 use crossterm::event::{Event, KeyEvent, KeyEventKind};
 
 mod editorcommand;
+mod statusbar;
 mod terminal;
 mod view;
 
@@ -13,7 +14,7 @@ use editorcommand::EditorCommand;
 use terminal::Terminal;
 use view::View;
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub struct DocumentStatus {
     total_lines: usize,
     current_line_index: usize,

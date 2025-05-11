@@ -19,4 +19,15 @@ impl StatusBar {
             position_y: size.height.saturating_sub(margin_bottom).saturating_sub(1),
         }
     }
+
+    pub fn render(&mut self) {
+        if !self.needs_redraw {
+            return;
+        }
+        let mut status = format!("{:?}", self.current_status);
+        status.truncate(self.width);
+        let result = Terminal::print_row(self.position_y, &status);
+        debug_assert!(result.is_ok(), "Failed to render status bar");
+        self.needs_redraw = false;
+    }
 }
