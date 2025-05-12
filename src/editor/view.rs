@@ -26,6 +26,20 @@ const NAME: &str = env!("CARGO_PKG_NAME");
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 impl View {
+    pub fn new(margin_bottom: usize) -> Self {
+        let terminal_size = Terminal::size().unwrap_or_default();
+        Self {
+            buffer: Buffer::default(),
+            needs_redraw: true,
+            size: Size {
+                width: terminal_size.width,
+                height: terminal_size.height.saturating_sub(margin_bottom),
+            },
+            text_location: Location::default(),
+            scroll_offset: Position::default(),
+        }
+    }
+
     pub fn resize(&mut self, to: Size) {
         self.size = to;
         self.scroll_location_into_view();
@@ -261,18 +275,5 @@ impl View {
 
     fn move_to_start_of_line(&mut self) {
         self.text_location.grapheme_index = 0;
-    }
-}
-
-impl Default for View {
-    fn default() -> Self {
-        let size = Terminal::size().unwrap_or_default();
-        Self {
-            buffer: Buffer::default(),
-            needs_redraw: true,
-            size,
-            text_location: Location::default(),
-            scroll_offset: Position::default(),
-        }
     }
 }

@@ -35,7 +35,7 @@ impl Editor {
             current_hook(panic_info);
         }));
         Terminal::initialize()?;
-        let mut view = View::default();
+        let mut view = View::new(2);
         let args: Vec<String> = env::args().collect();
         if let Some(file_name) = args.get(1) {
             view.load(file_name);
