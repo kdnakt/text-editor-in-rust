@@ -11,6 +11,7 @@ mod terminal;
 mod view;
 
 use editorcommand::EditorCommand;
+use statusbar::StatusBar;
 use terminal::Terminal;
 use view::View;
 
@@ -25,6 +26,7 @@ pub struct DocumentStatus {
 pub struct Editor {
     should_quit: bool,
     view: View,
+    status_bar: StatusBar,
 }
 
 impl Editor {
@@ -43,6 +45,7 @@ impl Editor {
         Ok(Self {
             should_quit: false,
             view,
+            status_bar: StatusBar::new(1),
         })
     }
 
@@ -85,6 +88,7 @@ impl Editor {
     fn refresh_screen(&mut self) {
         let _ = Terminal::hide_caret();
         let () = self.view.render();
+        let () = self.status_bar.render();
         let _ = Terminal::move_caret_to(self.view.get_position());
         let _ = Terminal::show_caret();
         let _ = Terminal::execute();
