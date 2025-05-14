@@ -1,6 +1,7 @@
 use super::{
     editorcommand::{Direction, EditorCommand},
     terminal::{Position, Size, Terminal},
+    DocumentStatus,
 };
 
 mod buffer;
@@ -37,6 +38,15 @@ impl View {
             },
             text_location: Location::default(),
             scroll_offset: Position::default(),
+        }
+    }
+
+    pub fn get_status(&self) -> DocumentStatus {
+        DocumentStatus {
+            total_lines: self.buffer.height(),
+            current_line_index: self.text_location.line_index,
+            file_name: self.buffer.file_name.clone(),
+            is_modified: self.buffer.dirty,
         }
     }
 

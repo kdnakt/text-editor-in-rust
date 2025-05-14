@@ -8,7 +8,8 @@ use super::{line::Line, Location};
 #[derive(Default)]
 pub struct Buffer {
     pub lines: Vec<Line>,
-    file_name: Option<String>,
+    pub file_name: Option<String>,
+    pub dirty: bool,
 }
 
 impl Buffer {
@@ -21,6 +22,7 @@ impl Buffer {
         Ok(Self {
             lines,
             file_name: Some(file_name.to_string()),
+            dirty: false,
         })
     }
 

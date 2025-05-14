@@ -15,7 +15,7 @@ use statusbar::StatusBar;
 use terminal::Terminal;
 use view::View;
 
-#[derive(Default, Debug)]
+#[derive(Default, Debug, PartialEq)]
 pub struct DocumentStatus {
     total_lines: usize,
     current_line_index: usize,
@@ -64,6 +64,8 @@ impl Editor {
                     }
                 }
             }
+            let status = self.view.get_status();
+            self.status_bar.update_status(status);
         }
     }
 

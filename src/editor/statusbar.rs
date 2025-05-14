@@ -30,4 +30,11 @@ impl StatusBar {
         debug_assert!(result.is_ok(), "Failed to render status bar");
         self.needs_redraw = false;
     }
+
+    pub fn update_status(&mut self, new_status: DocumentStatus) {
+        if self.current_status != new_status {
+            self.current_status = new_status;
+            self.needs_redraw = true;
+        }
+    }
 }
