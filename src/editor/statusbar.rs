@@ -1,4 +1,7 @@
-use super::{terminal::Terminal, DocumentStatus};
+use super::{
+    terminal::{Size, Terminal},
+    DocumentStatus,
+};
 
 pub struct StatusBar {
     current_status: DocumentStatus,
@@ -36,5 +39,14 @@ impl StatusBar {
             self.current_status = new_status;
             self.needs_redraw = true;
         }
+    }
+
+    pub fn resize(&mut self, to: Size) {
+        self.width = to.width;
+        self.position_y = to
+            .height
+            .saturating_sub(self.margin_bottom)
+            .saturating_sub(1);
+        self.needs_redraw = true;
     }
 }
