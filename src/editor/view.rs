@@ -123,6 +123,9 @@ impl View {
     }
 
     fn build_welcome_message(width: usize) -> String {
+        if width == 0 {
+            return String::new();
+        }
         let welcome_message = format!("{NAME} editor -- version {VERSION}");
         let len = welcome_message.len();
         if width <= len {
