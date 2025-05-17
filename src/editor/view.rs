@@ -142,7 +142,7 @@ impl View {
         }
     }
 
-    fn save(&self) {
+    fn save(&mut self) {
         let _ = self.buffer.save();
     }
 
