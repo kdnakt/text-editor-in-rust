@@ -6,6 +6,7 @@ use crossterm::event::read;
 use crossterm::event::{Event, KeyEvent, KeyEventKind};
 
 mod editorcommand;
+mod fileinfo;
 mod statusbar;
 mod terminal;
 mod view;
