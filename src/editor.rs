@@ -21,7 +21,7 @@ pub struct DocumentStatus {
     total_lines: usize,
     current_line_index: usize,
     is_modified: bool,
-    file_name: Option<String>,
+    file_name: String,
 }
 
 pub struct Editor {
