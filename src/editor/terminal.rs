@@ -8,6 +8,7 @@ use crossterm::{
     queue,
     terminal::{
         disable_raw_mode, enable_raw_mode, size, Clear, ClearType, DisableLineWrap, EnableLineWrap,
+        SetTitle,
     },
     Command,
 };
@@ -110,6 +111,11 @@ impl Terminal {
 
     pub fn leave_alternate_screen() -> Result<(), Error> {
         Self::queue_command(crossterm::terminal::LeaveAlternateScreen)?;
+        Ok(())
+    }
+
+    pub fn set_title(title: &str) -> Result<(), Error> {
+        Self::queue_command(SetTitle(title))?;
         Ok(())
     }
 

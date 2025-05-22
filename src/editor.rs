@@ -52,7 +52,17 @@ impl Editor {
         if let Some(file_name) = args.get(1) {
             editor.view.load(file_name);
         }
+        editor.refresh_status();
         Ok(editor)
+    }
+
+    pub fn refresh_status(&mut self) {
+        let status = self.view.get_status();
+        let title = format!("{} - {NAME}", status.file_name);
+        self.status_bar.update_status(status);
+        if title != self.title && matches!(Terminal::set_title(&title), Ok(())) {
+            self.title = title;
+        }
     }
 
     pub fn run(&mut self) {
