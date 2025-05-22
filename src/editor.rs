@@ -31,6 +31,7 @@ pub struct Editor {
     should_quit: bool,
     view: View,
     status_bar: StatusBar,
+    title: String,
 }
 
 impl Editor {
@@ -41,16 +42,17 @@ impl Editor {
             current_hook(panic_info);
         }));
         Terminal::initialize()?;
-        let mut view = View::new(2);
+        let mut editor = Self {
+            should_quit: false,
+            view: View::new(2),
+            status_bar: StatusBar::new(1),
+            title: String::new(),
+        };
         let args: Vec<String> = env::args().collect();
         if let Some(file_name) = args.get(1) {
-            view.load(file_name);
+            editor.view.load(file_name);
         }
-        Ok(Self {
-            should_quit: false,
-            view,
-            status_bar: StatusBar::new(1),
-        })
+        Ok(editor)
     }
 
     pub fn run(&mut self) {
