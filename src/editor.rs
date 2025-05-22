@@ -16,6 +16,9 @@ use statusbar::StatusBar;
 use terminal::Terminal;
 use view::View;
 
+pub const NAME: &str = env!("CARGO_PKG_NAME");
+pub const VERSION: &str = env!("CARGO_PKG_VERSION");
+
 #[derive(Default, Debug, PartialEq)]
 pub struct DocumentStatus {
     total_lines: usize,

@@ -1,7 +1,7 @@
 use super::{
     editorcommand::{Direction, EditorCommand},
     terminal::{Position, Size, Terminal},
-    DocumentStatus,
+    DocumentStatus, NAME, VERSION,
 };
 
 mod buffer;
@@ -22,9 +22,6 @@ pub struct View {
     text_location: Location,
     scroll_offset: Position,
 }
-
-const NAME: &str = env!("CARGO_PKG_NAME");
-const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 impl View {
     pub fn new(margin_bottom: usize) -> Self {
