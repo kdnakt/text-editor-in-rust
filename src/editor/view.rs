@@ -19,6 +19,7 @@ pub struct View {
     buffer: Buffer,
     needs_redraw: bool,
     size: Size,
+    margin_bottom: usize,
     text_location: Location,
     scroll_offset: Position,
 }
@@ -33,6 +34,7 @@ impl View {
                 width: terminal_size.width,
                 height: terminal_size.height.saturating_sub(margin_bottom),
             },
+            margin_bottom,
             text_location: Location::default(),
             scroll_offset: Position::default(),
         }
@@ -48,7 +50,10 @@ impl View {
     }
 
     pub fn resize(&mut self, to: Size) {
-        self.size = to;
+        self.size = Size {
+            width: to.width,
+            height: to.height.saturating_sub(self.margin_bottom),
+        };
         self.scroll_location_into_view();
         self.needs_redraw = true;
     }
