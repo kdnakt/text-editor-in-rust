@@ -30,10 +30,7 @@ impl View {
         Self {
             buffer: Buffer::default(),
             needs_redraw: true,
-            size: Size {
-                width: terminal_size.width,
-                height: terminal_size.height.saturating_sub(margin_bottom),
-            },
+            size: terminal_size.new(margin_bottom),
             margin_bottom,
             text_location: Location::default(),
             scroll_offset: Position::default(),
@@ -50,10 +47,7 @@ impl View {
     }
 
     pub fn resize(&mut self, to: Size) {
-        self.size = Size {
-            width: to.width,
-            height: to.height.saturating_sub(self.margin_bottom),
-        };
+        self.size = to.new(self.margin_bottom);
         self.scroll_location_into_view();
         self.needs_redraw = true;
     }
