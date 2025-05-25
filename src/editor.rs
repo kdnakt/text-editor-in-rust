@@ -5,6 +5,7 @@ use std::panic::set_hook;
 use crossterm::event::read;
 use crossterm::event::{Event, KeyEvent, KeyEventKind};
 
+mod documentstatus;
 mod editorcommand;
 mod fileinfo;
 mod statusbar;
@@ -18,14 +19,6 @@ use view::View;
 
 pub const NAME: &str = env!("CARGO_PKG_NAME");
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
-
-#[derive(Default, Debug, PartialEq)]
-pub struct DocumentStatus {
-    total_lines: usize,
-    current_line_index: usize,
-    is_modified: bool,
-    file_name: String,
-}
 
 pub struct Editor {
     should_quit: bool,

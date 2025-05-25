@@ -1,6 +1,6 @@
 use super::{
+    documentstatus::DocumentStatus,
     terminal::{Size, Terminal},
-    DocumentStatus,
 };
 
 pub struct StatusBar {

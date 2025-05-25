@@ -1,7 +1,8 @@
 use super::{
+    documentstatus::DocumentStatus,
     editorcommand::{Direction, EditorCommand},
     terminal::{Position, Size, Terminal},
-    DocumentStatus, NAME, VERSION,
+    NAME, VERSION,
 };
 
 mod buffer;
