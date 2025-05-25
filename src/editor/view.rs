@@ -124,14 +124,11 @@ impl View {
         }
         let welcome_message = format!("{NAME} editor -- version {VERSION}");
         let len = welcome_message.len();
-        if width <= len {
+        let remaining_width = width.saturating_sub(1);
+        if remaining_width <= len {
             return "~".to_string();
         }
-        #[allow(clippy::integer_division)]
-        let padding = (width.saturating_sub(len).saturating_sub(1)) / 2;
-        let mut full_message = format!("~{}{}", " ".repeat(padding), welcome_message);
-        full_message.truncate(width);
-        full_message
+        format!("{:<1}{:^remaining_width$}", "~", welcome_message)
     }
 
     pub fn load(&mut self, file_name: &str) {
