@@ -5,3 +5,17 @@ pub struct DocumentStatus {
     pub is_modified: bool,
     pub file_name: String,
 }
+
+impl DocumentStatus {
+    pub fn line_count_to_string(&self) -> String {
+        format!("{} lines", self.total_lines)
+    }
+
+    pub fn modified_indicator_to_string(&self) -> String {
+        if self.is_modified {
+            String::from("(modified)")
+        } else {
+            String::new()
+        }
+    }
+}
