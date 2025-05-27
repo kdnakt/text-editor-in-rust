@@ -18,4 +18,12 @@ impl DocumentStatus {
             String::new()
         }
     }
+
+    pub fn position_indicator_to_string(&self) -> String {
+        format!(
+            "{}/{}",
+            self.current_line_index.saturating_add(1),
+            self.total_lines
+        )
+    }
 }

@@ -6,6 +6,7 @@ use std::{
 use crossterm::{
     cursor::MoveTo,
     queue,
+    style::Attribute,
     terminal::{
         disable_raw_mode, enable_raw_mode, size, Clear, ClearType, DisableLineWrap, EnableLineWrap,
         SetTitle,
@@ -81,6 +82,19 @@ impl Terminal {
         Self::clear_line()?;
         Self::print(line_text)?;
         Ok(())
+    }
+
+    pub fn print_inverted_row(row: usize, line_text: &str) -> Result<(), Error> {
+        let width = Self::size()?.width;
+        Self::print_row(
+            row,
+            &format!(
+                "{}{:width$.width$}{}",
+                Attribute::Reverse,
+                line_text,
+                Attribute::Reset
+            ),
+        )
     }
 
     pub fn move_caret_to(position: Position) -> Result<(), Error> {

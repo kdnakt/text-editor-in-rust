@@ -31,11 +31,26 @@ impl StatusBar {
         if !self.needs_redraw || !self.is_visible {
             return;
         }
-        let mut status = format!("{:?}", self.current_status);
-        status.truncate(self.width);
-        let result = Terminal::print_row(self.position_y, &status);
-        debug_assert!(result.is_ok(), "Failed to render status bar");
-        self.needs_redraw = false;
+        if let Ok(size) = Terminal::size() {
+            let line_count = self.current_status.line_count_to_string();
+            let modified_indicator = self.current_status.modified_indicator_to_string();
+            let beginning = format!(
+                "{} - {line_count} {modified_indicator}",
+                self.current_status.file_name,
+            );
+
+            let position_indicator = self.current_status.position_indicator_to_string();
+            let remainder_len = size.width.saturating_sub(beginning.len());
+            let status = format!("{beginning}{position_indicator:>remainder_len$}");
+            let to_print = if status.len() <= size.width {
+                status
+            } else {
+                String::new()
+            };
+            let result = Terminal::print_inverted_row(self.position_y, &to_print);
+            debug_assert!(result.is_ok(), "Failed to render status bar");
+            self.needs_redraw = false;
+        }
     }
 
     pub fn update_status(&mut self, new_status: DocumentStatus) {
