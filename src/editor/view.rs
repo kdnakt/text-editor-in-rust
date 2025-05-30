@@ -16,6 +16,7 @@ pub struct Location {
     pub line_index: usize,
 }
 
+#[derive(Default)]
 pub struct View {
     buffer: Buffer,
     needs_redraw: bool,

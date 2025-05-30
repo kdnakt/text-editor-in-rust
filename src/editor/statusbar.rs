@@ -3,6 +3,7 @@ use super::{
     terminal::{Size, Terminal},
 };
 
+#[derive(Default)]
 pub struct StatusBar {
     current_status: DocumentStatus,
     needs_redraw: bool,
