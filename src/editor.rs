@@ -8,11 +8,11 @@ use crossterm::event::{Event, KeyEvent, KeyEventKind};
 mod documentstatus;
 mod editorcommand;
 mod fileinfo;
-mod statusbar;
 mod messagebar;
+mod statusbar;
 mod terminal;
-mod view;
 mod uicomponent;
+mod view;
 
 use editorcommand::EditorCommand;
 use messagebar::MessageBar;

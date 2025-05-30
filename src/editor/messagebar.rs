@@ -1,6 +1,5 @@
 use super::uicomponent::UIComponent;
 
-
 #[derive(Default)]
 pub struct MessageBar {
     current_message: String,

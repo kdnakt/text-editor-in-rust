@@ -1,6 +1,5 @@
 use super::terminal::Size;
 
-
 pub trait UIComponent {
     fn mark_redraw(&mut self, value: bool);
     fn needs_redraw(&self) -> bool;
@@ -10,5 +9,4 @@ pub trait UIComponent {
         self.set_size(to);
         self.mark_redraw(true);
     }
-
 }
