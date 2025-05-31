@@ -1,4 +1,4 @@
-use super::uicomponent::UIComponent;
+use super::{terminal::Terminal, uicomponent::UIComponent};
 
 #[derive(Default)]
 pub struct MessageBar {
@@ -17,5 +17,9 @@ impl UIComponent for MessageBar {
 
     fn set_size(&mut self, _to: super::terminal::Size) {
         // MessageBar does not need to handle size changes
+    }
+
+    fn draw(&mut self, origin: usize) -> Result<(), std::io::Error> {
+        Terminal::print_row(origin, &self.current_message)
     }
 }

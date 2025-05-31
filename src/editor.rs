@@ -123,8 +123,14 @@ impl Editor {
 
     fn refresh_screen(&mut self) {
         let _ = Terminal::hide_caret();
-        let () = self.view.render();
-        let () = self.status_bar.render();
+        if self.terminal_size.height > 1 {
+            let () = self
+                .status_bar
+                .render(self.terminal_size.height.saturating_sub(2));
+        }
+        if self.terminal_size.height > 2 {
+            let () = self.view.render();
+        }
         let _ = Terminal::move_caret_to(self.view.get_position());
         let _ = Terminal::show_caret();
         let _ = Terminal::execute();
