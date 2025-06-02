@@ -6,6 +6,15 @@ pub struct MessageBar {
     needs_redraw: bool,
 }
 
+impl MessageBar {
+    pub fn update_message(&mut self, new_message: String) {
+        if self.current_message != new_message {
+            self.current_message = new_message;
+            self.mark_redraw(true);
+        }
+    }
+}
+
 impl UIComponent for MessageBar {
     fn mark_redraw(&mut self, value: bool) {
         self.needs_redraw = value;

@@ -49,6 +49,9 @@ impl Editor {
         if let Some(file_name) = args.get(1) {
             editor.view.load(file_name);
         }
+        editor
+            .message_bar
+            .update_message("HELP: Ctrl+S = save | Ctrl+Q = quit".to_string());
         editor.refresh_status();
         Ok(editor)
     }
@@ -123,13 +126,15 @@ impl Editor {
 
     fn refresh_screen(&mut self) {
         let _ = Terminal::hide_caret();
+        self.message_bar
+            .render(self.terminal_size.height.saturating_sub(1));
         if self.terminal_size.height > 1 {
             let () = self
                 .status_bar
                 .render(self.terminal_size.height.saturating_sub(2));
         }
         if self.terminal_size.height > 2 {
-            let () = self.view.render();
+            let () = self.view.render(0);
         }
         let _ = Terminal::move_caret_to(self.view.get_position());
         let _ = Terminal::show_caret();
