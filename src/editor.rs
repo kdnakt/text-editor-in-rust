@@ -44,7 +44,7 @@ impl Editor {
         Terminal::initialize()?;
         let mut editor = Self::default();
         let size = Terminal::size().unwrap_or_default();
-        editor.view.resize(size);
+        editor.resize(size);
         let args: Vec<String> = env::args().collect();
         if let Some(file_name) = args.get(1) {
             editor.view.load(file_name);

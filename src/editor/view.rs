@@ -56,7 +56,9 @@ impl View {
         } else {
             false
         };
-        self.needs_redraw = self.needs_redraw || offset_changed;
+        if offset_changed {
+            self.mark_redraw(true);
+        }
     }
 
     fn scroll_horizontally(&mut self, to: usize) {
@@ -70,7 +72,9 @@ impl View {
         } else {
             false
         };
-        self.needs_redraw = self.needs_redraw || offset_changed;
+        if offset_changed {
+            self.mark_redraw(true);
+        }
     }
 
     pub fn render_line(at: usize, line_text: &str) -> Result<(), Error> {
@@ -269,11 +273,11 @@ impl UIComponent for View {
             if let Some(line) = self.buffer.lines.get(line_index) {
                 let left = self.scroll_offset.col;
                 let right = self.scroll_offset.col.saturating_add(width);
-                Self::render_line(current_row, &line.get_visible_graphemes(left..right));
+                Self::render_line(current_row, &line.get_visible_graphemes(left..right))?;
             } else if current_row == top_third && self.buffer.is_empty() {
-                Self::render_line(current_row, &Self::build_welcome_message(width));
+                Self::render_line(current_row, &Self::build_welcome_message(width))?;
             } else {
-                Self::render_line(current_row, "~");
+                Self::render_line(current_row, "~")?;
             }
         }
         Ok(())
