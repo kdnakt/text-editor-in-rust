@@ -20,15 +20,6 @@ pub struct Size {
     pub width: usize,
 }
 
-impl Size {
-    pub fn new(&self, margin_bottom: usize) -> Self {
-        Self {
-            width: self.width,
-            height: self.height.saturating_sub(margin_bottom),
-        }
-    }
-}
-
 #[derive(Clone, Copy, Default)]
 pub struct Position {
     pub col: usize,
