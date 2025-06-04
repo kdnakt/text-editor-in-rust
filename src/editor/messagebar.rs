@@ -1,17 +1,44 @@
+use std::time::{Duration, Instant};
+
 use super::{terminal::Terminal, uicomponent::UIComponent};
 
 #[derive(Default)]
 pub struct MessageBar {
-    current_message: String,
+    current_message: Message,
     needs_redraw: bool,
+    cleared_after_expiry: bool,
+}
+
+const DEFAULT_DURATION: Duration = Duration::new(5, 0); // 5 seconds
+
+struct Message {
+    text: String,
+    time: Instant,
+}
+
+impl Default for Message {
+    fn default() -> Self {
+        Self {
+            text: String::new(),
+            time: Instant::now(),
+        }
+    }
+}
+
+impl Message {
+    fn is_expired(&self) -> bool {
+        Instant::now().duration_since(self.time) > DEFAULT_DURATION
+    }
 }
 
 impl MessageBar {
     pub fn update_message(&mut self, new_message: String) {
-        if self.current_message != new_message {
-            self.current_message = new_message;
-            self.mark_redraw(true);
-        }
+        self.current_message = Message {
+            text: new_message,
+            time: Instant::now(),
+        };
+        self.cleared_after_expiry = false;
+        self.mark_redraw(true);
     }
 }
 
@@ -21,7 +48,7 @@ impl UIComponent for MessageBar {
     }
 
     fn needs_redraw(&self) -> bool {
-        self.needs_redraw
+        (!self.cleared_after_expiry && self.current_message.is_expired()) || self.needs_redraw
     }
 
     fn set_size(&mut self, _to: super::terminal::Size) {
@@ -29,6 +56,12 @@ impl UIComponent for MessageBar {
     }
 
     fn draw(&mut self, origin: usize) -> Result<(), std::io::Error> {
-        Terminal::print_row(origin, &self.current_message)
+        let message = if self.current_message.is_expired() {
+            self.cleared_after_expiry = true;
+            ""
+        } else {
+            &self.current_message.text
+        };
+        Terminal::print_row(origin, message)
     }
 }
