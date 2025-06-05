@@ -1,8 +1,8 @@
 use std::io::Error;
 
 use super::{
+    command::{Direction, EditorCommand},
     documentstatus::DocumentStatus,
-    editorcommand::{Direction, EditorCommand},
     terminal::{Position, Size, Terminal},
     uicomponent::UIComponent,
     NAME, VERSION,

@@ -5,8 +5,8 @@ use std::panic::set_hook;
 use crossterm::event::read;
 use crossterm::event::{Event, KeyEvent, KeyEventKind};
 
+mod command;
 mod documentstatus;
-mod editorcommand;
 mod fileinfo;
 mod messagebar;
 mod statusbar;
@@ -14,7 +14,7 @@ mod terminal;
 mod uicomponent;
 mod view;
 
-use editorcommand::EditorCommand;
+use command::EditorCommand;
 use messagebar::MessageBar;
 use statusbar::StatusBar;
 use terminal::{Size, Terminal};
