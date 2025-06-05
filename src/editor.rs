@@ -51,7 +51,7 @@ impl Editor {
         }
         editor
             .message_bar
-            .update_message("HELP: Ctrl+S = save | Ctrl+Q = quit".to_string());
+            .update_message("HELP: Ctrl+S = save | Ctrl+Q = quit");
         editor.refresh_status();
         Ok(editor)
     }
