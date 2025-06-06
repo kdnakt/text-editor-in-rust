@@ -1,7 +1,7 @@
 use std::io::Error;
 
 use super::{
-    command::{Direction, EditorCommand},
+    command::{EditorCommand, Move},
     documentstatus::DocumentStatus,
     terminal::{Position, Size, Terminal},
     uicomponent::UIComponent,
@@ -121,7 +121,7 @@ impl View {
     pub fn handle_command(&mut self, command: EditorCommand) {
         match command {
             EditorCommand::Resize(_) | EditorCommand::Quit => {}
-            EditorCommand::Move(direction) => self.move_text_location(direction),
+            EditorCommand::Move(m) => self.handle(m),
             EditorCommand::Insert(character) => self.insert_char(character),
             EditorCommand::Delete => self.delete(),
             EditorCommand::Backspace => self.backspace(),
@@ -144,43 +144,47 @@ impl View {
             .map_or(0, Line::grapheme_count);
         let grapheme_delta = new_len.saturating_sub(old_len);
         if grapheme_delta > 0 {
-            self.move_text_location(Direction::Right);
+            self.handle(Move::Right);
         }
         self.mark_redraw(true);
     }
 
     fn insert_newline(&mut self) {
         self.buffer.insert_newline(self.text_location);
-        self.move_text_location(Direction::Right);
+        self.handle(Move::Right);
         self.mark_redraw(true);
     }
 
     fn backspace(&mut self) {
         if self.text_location.line_index != 0 || self.text_location.grapheme_index != 0 {
-            self.move_text_location(Direction::Left);
+            self.handle(Move::Left);
             self.delete();
+        }
+    }
+
+    fn handle(&mut self, command: Move) {
+        let Size { height, .. } = self.size;
+        match command {
+            Move::Up => self.move_up(1),
+            Move::Down => self.move_down(1),
+            Move::Left => self.move_left(),
+            Move::Right => self.move_right(),
+            Move::PageUp => self.move_up(height.saturating_sub(1)),
+            Move::PageDown => self.move_down(height.saturating_sub(1)),
+            Move::Home => {
+                self.move_to_start_of_line();
+                self.snap_to_valid_grapheme();
+            }
+            Move::End => {
+                self.move_to_end_of_line();
+                self.snap_to_valid_grapheme();
+            }
         }
     }
 
     fn delete(&mut self) {
         self.buffer.delete(self.text_location);
         self.mark_redraw(true);
-    }
-
-    #[allow(clippy::arithmetic_side_effects)]
-    fn move_text_location(&mut self, direction: Direction) {
-        let Size { height, .. } = self.size;
-        match direction {
-            Direction::Up => self.move_up(1),
-            Direction::Down => self.move_down(1),
-            Direction::Left => self.move_left(),
-            Direction::Right => self.move_right(),
-            Direction::PageUp => self.move_up(height.saturating_sub(1)),
-            Direction::PageDown => self.move_down(height.saturating_sub(1)),
-            Direction::Home => self.move_to_start_of_line(),
-            Direction::End => self.move_to_end_of_line(),
-        }
-        self.scroll_location_into_view();
     }
 
     fn move_up(&mut self, step: usize) {

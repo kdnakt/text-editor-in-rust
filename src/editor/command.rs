@@ -3,7 +3,7 @@ use crossterm::event::{Event, KeyCode, KeyEvent, KeyModifiers};
 use super::terminal::Size;
 
 #[derive(Clone, Copy)]
-pub enum Direction {
+pub enum Move {
     PageUp,
     PageDown,
     Home,
@@ -16,7 +16,7 @@ pub enum Direction {
 
 #[derive(Clone, Copy)]
 pub enum EditorCommand {
-    Move(Direction),
+    Move(Move),
     Resize(Size),
     Quit,
     Insert(char),
@@ -42,14 +42,14 @@ impl TryFrom<Event> for EditorCommand {
                 }
                 (KeyCode::Tab, _) => Ok(Self::Insert('\t')),
                 (KeyCode::Enter, _) => Ok(Self::Enter),
-                (KeyCode::Up, _) => Ok(Self::Move(Direction::Up)),
-                (KeyCode::Down, _) => Ok(Self::Move(Direction::Down)),
-                (KeyCode::Left, _) => Ok(Self::Move(Direction::Left)),
-                (KeyCode::Right, _) => Ok(Self::Move(Direction::Right)),
-                (KeyCode::PageUp, _) => Ok(Self::Move(Direction::PageUp)),
-                (KeyCode::PageDown, _) => Ok(Self::Move(Direction::PageDown)),
-                (KeyCode::Home, _) => Ok(Self::Move(Direction::Home)),
-                (KeyCode::End, _) => Ok(Self::Move(Direction::End)),
+                (KeyCode::Up, _) => Ok(Self::Move(Move::Up)),
+                (KeyCode::Down, _) => Ok(Self::Move(Move::Down)),
+                (KeyCode::Left, _) => Ok(Self::Move(Move::Left)),
+                (KeyCode::Right, _) => Ok(Self::Move(Move::Right)),
+                (KeyCode::PageUp, _) => Ok(Self::Move(Move::PageUp)),
+                (KeyCode::PageDown, _) => Ok(Self::Move(Move::PageDown)),
+                (KeyCode::Home, _) => Ok(Self::Move(Move::Home)),
+                (KeyCode::End, _) => Ok(Self::Move(Move::End)),
                 (KeyCode::Backspace, _) => Ok(Self::Backspace),
                 (KeyCode::Delete, _) => Ok(Self::Delete),
                 _ => Err(format!("Key code not supported: {code:?}")),
