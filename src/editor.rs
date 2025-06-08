@@ -98,16 +98,21 @@ impl Editor {
         };
         if should_process {
             if let Ok(command) = EditorCommand::try_from(event) {
-                if matches!(command, EditorCommand::Quit) {
-                    self.should_quit = true;
-                } else if let EditorCommand::Resize(size) = command {
-                    self.resize(size);
-                } else {
-                    self.view.handle_command(command);
-                    if let EditorCommand::Resize(size) = command {
-                        self.status_bar.resize(size);
-                    }
-                }
+                self.process_command(command);
+            }
+        }
+    }
+
+    fn process_command(&mut self, command: EditorCommand) {
+        match command {
+            EditorCommand::Quit => {
+                self.should_quit = true;
+            }
+            EditorCommand::Resize(size) => {
+                self.resize(size);
+            }
+            _ => {
+                self.view.handle_command(command);
             }
         }
     }
