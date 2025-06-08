@@ -94,11 +94,11 @@ impl View {
         format!("{:<1}{:^remaining_width$}", "~", welcome_message)
     }
 
-    pub fn load(&mut self, file_name: &str) {
-        if let Ok(buffers) = Buffer::load(file_name) {
-            self.buffer = buffers;
-            self.mark_redraw(true);
-        }
+    pub fn load(&mut self, file_name: &str) -> Result<(), Error> {
+        let buffer = Buffer::load(file_name)?;
+        self.buffer = buffer;
+        self.mark_redraw(true);
+        Ok(())
     }
 
     fn save(&mut self) {

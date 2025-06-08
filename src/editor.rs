@@ -47,7 +47,11 @@ impl Editor {
         editor.resize(size);
         let args: Vec<String> = env::args().collect();
         if let Some(file_name) = args.get(1) {
-            editor.view.load(file_name);
+            if editor.view.load(file_name).is_err() {
+                editor
+                    .message_bar
+                    .update_message(&format!("ERR: Could not open file: {file_name}"));
+            }
         }
         editor
             .message_bar
