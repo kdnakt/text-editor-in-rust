@@ -15,7 +15,7 @@ pub enum Move {
 }
 
 #[derive(Clone, Copy)]
-pub enum EditorCommand {
+pub enum Command {
     Move(Move),
     Resize(Size),
     Quit,
@@ -27,7 +27,7 @@ pub enum EditorCommand {
 }
 
 #[allow(clippy::as_conversions)]
-impl TryFrom<Event> for EditorCommand {
+impl TryFrom<Event> for Command {
     type Error = String;
 
     fn try_from(event: Event) -> Result<Self, Self::Error> {

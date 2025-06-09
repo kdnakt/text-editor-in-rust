@@ -1,7 +1,7 @@
 use std::io::Error;
 
 use super::{
-    command::{EditorCommand, Move},
+    command::{Command, Move},
     documentstatus::DocumentStatus,
     terminal::{Position, Size, Terminal},
     uicomponent::UIComponent,
@@ -118,15 +118,15 @@ impl View {
         Position { col, row }
     }
 
-    pub fn handle_command(&mut self, command: EditorCommand) {
+    pub fn handle_command(&mut self, command: Command) {
         match command {
-            EditorCommand::Resize(_) | EditorCommand::Quit => {}
-            EditorCommand::Move(m) => self.handle(m),
-            EditorCommand::Insert(character) => self.insert_char(character),
-            EditorCommand::Delete => self.delete(),
-            EditorCommand::Backspace => self.backspace(),
-            EditorCommand::Enter => self.insert_newline(),
-            EditorCommand::Save => self.save(),
+            Command::Resize(_) | Command::Quit => {}
+            Command::Move(m) => self.handle(m),
+            Command::Insert(character) => self.insert_char(character),
+            Command::Delete => self.delete(),
+            Command::Backspace => self.backspace(),
+            Command::Enter => self.insert_newline(),
+            Command::Save => self.save(),
         }
     }
 

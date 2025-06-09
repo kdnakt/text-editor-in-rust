@@ -14,7 +14,7 @@ mod terminal;
 mod uicomponent;
 mod view;
 
-use command::EditorCommand;
+use command::Command;
 use messagebar::MessageBar;
 use statusbar::StatusBar;
 use terminal::{Size, Terminal};
@@ -97,18 +97,18 @@ impl Editor {
             _ => false,
         };
         if should_process {
-            if let Ok(command) = EditorCommand::try_from(event) {
+            if let Ok(command) = Command::try_from(event) {
                 self.process_command(command);
             }
         }
     }
 
-    fn process_command(&mut self, command: EditorCommand) {
+    fn process_command(&mut self, command: Command) {
         match command {
-            EditorCommand::Quit => {
+            Command::Quit => {
                 self.should_quit = true;
             }
-            EditorCommand::Resize(size) => {
+            Command::Resize(size) => {
                 self.resize(size);
             }
             _ => {
