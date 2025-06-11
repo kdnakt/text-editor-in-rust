@@ -27,6 +27,8 @@ use view::View;
 pub const NAME: &str = env!("CARGO_PKG_NAME");
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
+const QUIT_TIMES: u8 = 3;
+
 #[derive(Default)]
 pub struct Editor {
     should_quit: bool,
@@ -35,6 +37,7 @@ pub struct Editor {
     message_bar: MessageBar,
     terminal_size: Size,
     title: String,
+    quit_times: u8,
 }
 
 impl Editor {
@@ -108,19 +111,35 @@ impl Editor {
 
     fn process_command(&mut self, command: Command) {
         match command {
-            System(Quit) => {
-                self.should_quit = true;
-            }
-            System(Resize(size)) => {
-                self.resize(size);
-            }
-            _ => {}
+            System(Quit) => self.handle_quit(),
+            System(Resize(size)) => self.resize(size),
+            _ => self.reset_quit_times(),
         }
         match command {
             System(Quit | Resize(_)) => {} // already handled
             System(Save) => self.handle_save(),
             Edit(edit_command) => self.view.handle_edit_command(edit_command),
             Move(move_command) => self.view.handle_move_command(move_command),
+        }
+    }
+
+    #[allow(clippy::arithmetic_side_effects)]
+    fn handle_quit(&mut self) {
+        if !self.view.get_status().is_modified || self.quit_times + 1 == QUIT_TIMES {
+            self.should_quit = true;
+        } else if self.view.get_status().is_modified {
+            self.message_bar.update_message(&format!(
+                "WARNING! File has unsaved changes. Press Ctrl+Q {} more times to quit.",
+                QUIT_TIMES - self.quit_times - 1
+            ));
+            self.quit_times += 1;
+        }
+    }
+
+    fn reset_quit_times(&mut self) {
+        if self.quit_times > 0 {
+            self.quit_times = 0;
+            self.message_bar.update_message("");
         }
     }
 
