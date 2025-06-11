@@ -1,7 +1,7 @@
 use std::io::Error;
 
 use super::{
-    command::{Command, Move},
+    command::{Edit, Move},
     documentstatus::DocumentStatus,
     terminal::{Position, Size, Terminal},
     uicomponent::UIComponent,
@@ -101,8 +101,8 @@ impl View {
         Ok(())
     }
 
-    fn save(&mut self) {
-        let _ = self.buffer.save();
+    pub fn save(&mut self) -> Result<(), Error> {
+        self.buffer.save()
     }
 
     pub fn get_position(&self) -> Position {
@@ -118,15 +118,12 @@ impl View {
         Position { col, row }
     }
 
-    pub fn handle_command(&mut self, command: Command) {
+    pub fn handle_edit_command(&mut self, command: Edit) {
         match command {
-            Command::Resize(_) | Command::Quit => {}
-            Command::Move(m) => self.handle(m),
-            Command::Insert(character) => self.insert_char(character),
-            Command::Delete => self.delete(),
-            Command::Backspace => self.backspace(),
-            Command::Enter => self.insert_newline(),
-            Command::Save => self.save(),
+            Edit::Insert(character) => self.insert_char(character),
+            Edit::Delete => self.delete(),
+            Edit::Backspace => self.backspace(),
+            Edit::InsertNewLine => self.insert_newline(),
         }
     }
 
@@ -144,25 +141,25 @@ impl View {
             .map_or(0, Line::grapheme_count);
         let grapheme_delta = new_len.saturating_sub(old_len);
         if grapheme_delta > 0 {
-            self.handle(Move::Right);
+            self.handle_move_command(Move::Right);
         }
         self.mark_redraw(true);
     }
 
     fn insert_newline(&mut self) {
         self.buffer.insert_newline(self.text_location);
-        self.handle(Move::Right);
+        self.handle_move_command(Move::Right);
         self.mark_redraw(true);
     }
 
     fn backspace(&mut self) {
         if self.text_location.line_index != 0 || self.text_location.grapheme_index != 0 {
-            self.handle(Move::Left);
+            self.handle_move_command(Move::Left);
             self.delete();
         }
     }
 
-    fn handle(&mut self, command: Move) {
+    pub fn handle_move_command(&mut self, command: Move) {
         let Size { height, .. } = self.size;
         match command {
             Move::Up => self.move_up(1),
@@ -180,6 +177,7 @@ impl View {
                 self.snap_to_valid_grapheme();
             }
         }
+        self.scroll_location_into_view();
     }
 
     fn delete(&mut self) {

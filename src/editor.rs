@@ -14,7 +14,10 @@ mod terminal;
 mod uicomponent;
 mod view;
 
-use command::Command;
+use command::{
+    Command::{self, Edit, Move, System},
+    System::{Quit, Resize, Save},
+};
 use messagebar::MessageBar;
 use statusbar::StatusBar;
 use terminal::{Size, Terminal};
@@ -105,15 +108,28 @@ impl Editor {
 
     fn process_command(&mut self, command: Command) {
         match command {
-            Command::Quit => {
+            System(Quit) => {
                 self.should_quit = true;
             }
-            Command::Resize(size) => {
+            System(Resize(size)) => {
                 self.resize(size);
             }
-            _ => {
-                self.view.handle_command(command);
-            }
+            _ => {}
+        }
+        match command {
+            System(Quit | Resize(_)) => {} // already handled
+            System(Save) => self.handle_save(),
+            Edit(edit_command) => self.view.handle_edit_command(edit_command),
+            Move(move_command) => self.view.handle_move_command(move_command),
+        }
+    }
+
+    fn handle_save(&mut self) {
+        if self.view.save().is_ok() {
+            self.message_bar.update_message("File saved successfully.");
+        } else {
+            self.message_bar
+                .update_message(&format!("Error writing file!"));
         }
     }
 
