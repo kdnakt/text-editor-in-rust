@@ -10,6 +10,7 @@ mod documentstatus;
 mod fileinfo;
 mod messagebar;
 mod position;
+mod size;
 mod statusbar;
 mod terminal;
 mod uicomponent;
@@ -20,8 +21,9 @@ use command::{
     System::{Quit, Resize, Save},
 };
 use messagebar::MessageBar;
+use size::Size;
 use statusbar::StatusBar;
-use terminal::{Size, Terminal};
+use terminal::Terminal;
 use uicomponent::UIComponent;
 use view::View;
 

@@ -1,6 +1,6 @@
 use std::io::Error;
 
-use super::terminal::Size;
+use super::size::Size;
 
 pub trait UIComponent {
     fn mark_redraw(&mut self, value: bool);

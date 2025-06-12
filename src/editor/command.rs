@@ -1,6 +1,6 @@
 use crossterm::event::{Event, KeyCode, KeyEvent, KeyModifiers};
 
-use super::terminal::Size;
+use super::size::Size;
 
 #[derive(Clone, Copy)]
 pub enum Move {

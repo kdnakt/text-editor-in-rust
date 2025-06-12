@@ -1,6 +1,6 @@
 use std::time::{Duration, Instant};
 
-use super::{terminal::Terminal, uicomponent::UIComponent};
+use super::{size::Size, terminal::Terminal, uicomponent::UIComponent};
 
 #[derive(Default)]
 pub struct MessageBar {
@@ -51,7 +51,7 @@ impl UIComponent for MessageBar {
         (!self.cleared_after_expiry && self.current_message.is_expired()) || self.needs_redraw
     }
 
-    fn set_size(&mut self, _to: super::terminal::Size) {
+    fn set_size(&mut self, _to: Size) {
         // MessageBar does not need to handle size changes
     }
 

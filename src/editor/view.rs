@@ -4,7 +4,8 @@ use super::{
     command::{Edit, Move},
     documentstatus::DocumentStatus,
     position::Position,
-    terminal::{Size, Terminal},
+    size::Size,
+    terminal::Terminal,
     uicomponent::UIComponent,
     NAME, VERSION,
 };
