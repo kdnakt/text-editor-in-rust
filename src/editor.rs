@@ -9,6 +9,7 @@ mod command;
 mod documentstatus;
 mod fileinfo;
 mod messagebar;
+mod position;
 mod statusbar;
 mod terminal;
 mod uicomponent;

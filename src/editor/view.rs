@@ -3,7 +3,8 @@ use std::io::Error;
 use super::{
     command::{Edit, Move},
     documentstatus::DocumentStatus,
-    terminal::{Position, Size, Terminal},
+    position::Position,
+    terminal::{Size, Terminal},
     uicomponent::UIComponent,
     NAME, VERSION,
 };
