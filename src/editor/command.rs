@@ -76,6 +76,7 @@ pub enum System {
     Save,
     Resize(Size),
     Quit,
+    Dismiss,
 }
 
 impl TryFrom<KeyEvent> for System {
@@ -91,6 +92,8 @@ impl TryFrom<KeyEvent> for System {
                 KeyCode::Char('q') => Ok(Self::Quit),
                 _ => Err(format!("Unsupported CONTROL+{code:?} combination")),
             }
+        } else if modifiers == KeyModifiers::NONE && matches!(code, KeyCode::Esc) {
+            Ok(Self::Dismiss)
         } else {
             Err(format!(
                 "Unsupported key code {code:?} or modifier {modifiers:?}"

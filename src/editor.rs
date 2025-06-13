@@ -18,7 +18,7 @@ mod view;
 
 use command::{
     Command::{self, Edit, Move, System},
-    System::{Quit, Resize, Save},
+    System::{Dismiss, Quit, Resize, Save},
 };
 use messagebar::MessageBar;
 use size::Size;
@@ -121,6 +121,9 @@ impl Editor {
         match command {
             System(Quit | Resize(_)) => {} // already handled
             System(Save) => self.handle_save(),
+            System(Dismiss) => {
+                self.message_bar.update_message("Save aborted.");
+            }
             Edit(edit_command) => self.view.handle_edit_command(edit_command),
             Move(move_command) => self.view.handle_move_command(move_command),
         }
