@@ -3,9 +3,7 @@ use std::{
     io::{Error, Write},
 };
 
-use crate::editor::fileinfo::FileInfo;
-
-use super::{Line, Location};
+use super::{fileinfo::FileInfo, Line, Location};
 
 #[derive(Default)]
 pub struct Buffer {

@@ -7,7 +7,6 @@ use crossterm::event::{Event, KeyEvent, KeyEventKind};
 
 mod command;
 mod documentstatus;
-mod fileinfo;
 mod line;
 mod messagebar;
 mod position;
