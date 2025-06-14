@@ -8,6 +8,7 @@ use crossterm::event::{Event, KeyEvent, KeyEventKind};
 mod command;
 mod documentstatus;
 mod fileinfo;
+mod line;
 mod messagebar;
 mod position;
 mod size;
@@ -20,6 +21,7 @@ use command::{
     Command::{self, Edit, Move, System},
     System::{Dismiss, Quit, Resize, Save},
 };
+use line::Line;
 use messagebar::MessageBar;
 use size::Size;
 use statusbar::StatusBar;

@@ -3,6 +3,7 @@ use std::io::Error;
 use super::{
     command::{Edit, Move},
     documentstatus::DocumentStatus,
+    line::Line,
     position::Position,
     size::Size,
     terminal::Terminal,
@@ -12,8 +13,6 @@ use super::{
 
 mod buffer;
 use buffer::Buffer;
-mod line;
-use line::Line;
 
 #[derive(Clone, Copy, Default)]
 pub struct Location {

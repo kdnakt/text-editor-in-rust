@@ -5,7 +5,7 @@ use std::{
 
 use crate::editor::fileinfo::FileInfo;
 
-use super::{line::Line, Location};
+use super::{Line, Location};
 
 #[derive(Default)]
 pub struct Buffer {
