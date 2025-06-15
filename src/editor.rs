@@ -6,6 +6,7 @@ use crossterm::event::read;
 use crossterm::event::{Event, KeyEvent, KeyEventKind};
 
 mod command;
+mod commandbar;
 mod documentstatus;
 mod line;
 mod messagebar;
@@ -20,6 +21,7 @@ use command::{
     Command::{self, Edit, Move, System},
     System::{Dismiss, Quit, Resize, Save},
 };
+use commandbar::CommandBar;
 use line::Line;
 use messagebar::MessageBar;
 use size::Size;
@@ -39,6 +41,7 @@ pub struct Editor {
     view: View,
     status_bar: StatusBar,
     message_bar: MessageBar,
+    command_bar: Option<CommandBar>,
     terminal_size: Size,
     title: String,
     quit_times: u8,
