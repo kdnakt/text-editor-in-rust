@@ -176,6 +176,12 @@ impl Editor {
             height: 1,
             width: size.width,
         });
+        if let Some(command_bar) = &mut self.command_bar {
+            command_bar.resize(Size {
+                height: 1,
+                width: size.width,
+            });
+        }
     }
 
     fn refresh_screen(&mut self) {

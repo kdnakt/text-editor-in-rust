@@ -161,6 +161,10 @@ impl Line {
             fragments: remainder,
         }
     }
+
+    pub fn width(&self) -> usize {
+        self.width_until(self.grapheme_count())
+    }
 }
 
 impl fmt::Display for Line {
