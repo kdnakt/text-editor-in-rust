@@ -128,7 +128,17 @@ impl Editor {
             System(Dismiss) => {
                 self.message_bar.update_message("Save aborted.");
             }
-            Edit(edit_command) => self.view.handle_edit_command(edit_command),
+            Edit(edit_command) => {
+                if let Some(command_bar) = &mut self.command_bar {
+                    if matches!(edit_command, command::Edit::InsertNewLine) {
+                        todo!();
+                    } else {
+                        command_bar.handle_edit_command(edit_command);
+                    }
+                } else {
+                    self.view.handle_edit_command(edit_command);
+                }
+            }
             Move(move_command) => self.view.handle_move_command(move_command),
         }
     }

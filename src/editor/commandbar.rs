@@ -1,3 +1,4 @@
+use super::command::Edit;
 use super::terminal::Terminal;
 use super::uicomponent::UIComponent;
 use super::Line;
@@ -8,6 +9,18 @@ pub struct CommandBar {
     value: Line,
     needs_redraw: bool,
     size: Size,
+}
+
+impl CommandBar {
+    pub fn handle_edit_command(&mut self, command: Edit) {
+        match command {
+            Edit::Insert(c) => {
+                self.value.append_char(c);
+            }
+            Edit::Delete | Edit::InsertNewLine => {}
+            Edit::Backspace => self.value.delete_last(),
+        }
+    }
 }
 
 impl UIComponent for CommandBar {
