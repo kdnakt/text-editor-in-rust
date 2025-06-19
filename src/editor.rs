@@ -126,7 +126,10 @@ impl Editor {
             System(Quit | Resize(_)) => {} // already handled
             System(Save) => self.handle_save(),
             System(Dismiss) => {
-                self.message_bar.update_message("Save aborted.");
+                if self.command_bar.is_none() {
+                    // TODO: dismiss prompt
+                    self.message_bar.update_message("Save aborted.");
+                }
             }
             Edit(edit_command) => {
                 if let Some(command_bar) = &mut self.command_bar {
@@ -139,7 +142,11 @@ impl Editor {
                     self.view.handle_edit_command(edit_command);
                 }
             }
-            Move(move_command) => self.view.handle_move_command(move_command),
+            Move(move_command) => {
+                if self.command_bar.is_none() {
+                    self.view.handle_move_command(move_command);
+                }
+            }
         }
     }
 
