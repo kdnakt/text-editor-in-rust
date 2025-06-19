@@ -20,6 +20,7 @@ impl CommandBar {
             Edit::Delete | Edit::InsertNewLine => {}
             Edit::Backspace => self.value.delete_last(),
         }
+        self.mark_redraw(true);
     }
 }
 

@@ -127,7 +127,7 @@ impl Editor {
             System(Save) => self.handle_save(),
             System(Dismiss) => {
                 if self.command_bar.is_none() {
-                    // TODO: dismiss prompt
+                    self.dismiss_prompt();
                     self.message_bar.update_message("Save aborted.");
                 }
             }
@@ -135,6 +135,7 @@ impl Editor {
                 if let Some(command_bar) = &mut self.command_bar {
                     if matches!(edit_command, command::Edit::InsertNewLine) {
                         todo!();
+                        self.dismiss_prompt();
                     } else {
                         command_bar.handle_edit_command(edit_command);
                     }
@@ -161,6 +162,11 @@ impl Editor {
             ));
             self.quit_times += 1;
         }
+    }
+
+    fn dismiss_prompt(&mut self) {
+        self.command_bar = None;
+        self.message_bar.mark_redraw(true);
     }
 
     fn reset_quit_times(&mut self) {
