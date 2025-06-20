@@ -231,6 +231,9 @@ impl Editor {
     }
 
     fn refresh_screen(&mut self) {
+        if self.terminal_size.width == 0 || self.terminal_size.height == 0 {
+            return; // No terminal size, nothing to render
+        }
         let _ = Terminal::hide_caret();
         self.message_bar
             .render(self.terminal_size.height.saturating_sub(1));

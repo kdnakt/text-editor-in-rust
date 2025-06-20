@@ -1,3 +1,5 @@
+use std::cmp::min;
+
 use super::command::Edit;
 use super::terminal::Terminal;
 use super::uicomponent::UIComponent;
@@ -26,6 +28,14 @@ impl CommandBar {
 
     pub fn set_prompt(&mut self, prompt: &str) {
         self.prompt = prompt.to_string();
+    }
+
+    pub fn caret_position_col(&self) -> usize {
+        let max_width = self
+            .prompt
+            .len()
+            .saturating_add(self.value.grapheme_count());
+        min(max_width, self.size.width)
     }
 }
 
