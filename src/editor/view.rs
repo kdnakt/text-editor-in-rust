@@ -249,6 +249,10 @@ impl View {
     fn move_to_start_of_line(&mut self) {
         self.text_location.grapheme_index = 0;
     }
+
+    pub const fn is_file_loaded(&self) -> bool {
+        self.buffer.is_file_loaded()
+    }
 }
 
 impl UIComponent for View {

@@ -169,6 +169,17 @@ impl Editor {
         self.message_bar.mark_redraw(true);
     }
 
+    fn show_prompt(&mut self) {
+        let mut command_bar = CommandBar::default();
+        command_bar.set_prompt("Save as: ");
+        command_bar.resize(Size {
+            height: 1,
+            width: self.terminal_size.width,
+        });
+        command_bar.mark_redraw(true);
+        self.command_bar = Some(command_bar);
+    }
+
     fn reset_quit_times(&mut self) {
         if self.quit_times > 0 {
             self.quit_times = 0;
@@ -177,11 +188,10 @@ impl Editor {
     }
 
     fn handle_save(&mut self) {
-        if self.view.save().is_ok() {
-            self.message_bar.update_message("File saved successfully.");
+        if self.view.is_file_loaded() {
+            todo!()
         } else {
-            self.message_bar
-                .update_message(&format!("Error writing file!"));
+            self.show_prompt();
         }
     }
 

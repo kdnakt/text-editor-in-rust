@@ -85,4 +85,8 @@ impl Buffer {
     pub fn height(&self) -> usize {
         self.lines.len()
     }
+
+    pub const fn is_file_loaded(&self) -> bool {
+        self.file_info.has_path()
+    }
 }

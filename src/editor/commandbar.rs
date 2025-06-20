@@ -4,6 +4,7 @@ use super::uicomponent::UIComponent;
 use super::Line;
 use super::Size;
 
+#[derive(Default)]
 pub struct CommandBar {
     prompt: String,
     value: Line,
@@ -21,6 +22,10 @@ impl CommandBar {
             Edit::Backspace => self.value.delete_last(),
         }
         self.mark_redraw(true);
+    }
+
+    pub fn set_prompt(&mut self, prompt: &str) {
+        self.prompt = prompt.to_string();
     }
 }
 
