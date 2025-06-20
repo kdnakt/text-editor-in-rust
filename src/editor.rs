@@ -189,9 +189,22 @@ impl Editor {
 
     fn handle_save(&mut self) {
         if self.view.is_file_loaded() {
-            todo!()
+            self.save(None);
         } else {
             self.show_prompt();
+        }
+    }
+
+    fn save(&mut self, file_name: Option<&str>) {
+        let result = if let Some(name) = file_name {
+            self.view.save_as(name)
+        } else {
+            self.view.save()
+        };
+        if result.is_ok() {
+            self.message_bar.update_message("File saved successfully.");
+        } else {
+            self.message_bar.update_message("Error writing file!");
         }
     }
 

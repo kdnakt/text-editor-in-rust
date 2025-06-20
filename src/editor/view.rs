@@ -108,6 +108,10 @@ impl View {
         self.buffer.save()
     }
 
+    pub fn save_as(&mut self, file_name: &str) -> Result<(), Error> {
+        self.buffer.save_as(file_name)
+    }
+
     pub fn get_position(&self) -> Position {
         self.text_location_to_position()
             .saturating_sub(self.scroll_offset)
