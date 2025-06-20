@@ -234,7 +234,13 @@ impl Editor {
         if self.terminal_size.width == 0 || self.terminal_size.height == 0 {
             return; // No terminal size, nothing to render
         }
+        let bottom_bar_row = self.terminal_size.height.saturating_sub(1);
         let _ = Terminal::hide_caret();
+        if let Some(command_bar) = &mut self.command_bar {
+            command_bar.render(bottom_bar_row);
+        } else {
+            self.message_bar.render(bottom_bar_row);
+        }
         self.message_bar
             .render(self.terminal_size.height.saturating_sub(1));
         if self.terminal_size.height > 1 {
