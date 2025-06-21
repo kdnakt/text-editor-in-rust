@@ -241,8 +241,6 @@ impl Editor {
         } else {
             self.message_bar.render(bottom_bar_row);
         }
-        self.message_bar
-            .render(self.terminal_size.height.saturating_sub(1));
         if self.terminal_size.height > 1 {
             let () = self
                 .status_bar
