@@ -256,7 +256,7 @@ impl Editor {
                 col: command_bar.caret_position_col(),
             }
         } else {
-            self.view.get_position()
+            self.view.caret_position()
         };
         let _ = Terminal::move_caret_to(new_caret_pos);
         let _ = Terminal::show_caret();
