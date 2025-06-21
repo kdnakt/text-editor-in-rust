@@ -24,6 +24,7 @@ use command::{
 use commandbar::CommandBar;
 use line::Line;
 use messagebar::MessageBar;
+use position::Position;
 use size::Size;
 use statusbar::StatusBar;
 use terminal::Terminal;
@@ -249,7 +250,15 @@ impl Editor {
         if self.terminal_size.height > 2 {
             let () = self.view.render(0);
         }
-        let _ = Terminal::move_caret_to(self.view.get_position());
+        let new_caret_pos = if let Some(command_bar) = &self.command_bar {
+            Position {
+                row: bottom_bar_row,
+                col: command_bar.caret_position_col(),
+            }
+        } else {
+            self.view.get_position()
+        };
+        let _ = Terminal::move_caret_to(new_caret_pos);
         let _ = Terminal::show_caret();
         let _ = Terminal::execute();
     }
