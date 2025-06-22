@@ -36,6 +36,19 @@ pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 const QUIT_TIMES: u8 = 3;
 
+#[derive(Eq, PartialEq, Default)]
+enum PromptType {
+    #[default]
+    None,
+    Save,
+}
+
+impl PromptType {
+    fn is_none(&self) -> bool {
+        *self == Self::None
+    }
+}
+
 #[derive(Default)]
 pub struct Editor {
     should_quit: bool,
@@ -43,6 +56,7 @@ pub struct Editor {
     status_bar: StatusBar,
     message_bar: MessageBar,
     command_bar: Option<CommandBar>,
+    prompt_type: PromptType,
     terminal_size: Size,
     title: String,
     quit_times: u8,
