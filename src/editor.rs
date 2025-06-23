@@ -72,7 +72,7 @@ impl Editor {
         Terminal::initialize()?;
         let mut editor = Self::default();
         let size = Terminal::size().unwrap_or_default();
-        editor.resize(size);
+        editor.handle_resize_command(size);
         let args: Vec<String> = env::args().collect();
         if let Some(file_name) = args.get(1) {
             if editor.view.load(file_name).is_err() {
@@ -134,7 +134,7 @@ impl Editor {
     fn process_command(&mut self, command: Command) {
         match command {
             System(Quit) => self.handle_quit(),
-            System(Resize(size)) => self.resize(size),
+            System(Resize(size)) => self.handle_resize_command(size),
             _ => self.reset_quit_times(),
         }
         match command {
@@ -223,25 +223,20 @@ impl Editor {
         }
     }
 
-    fn resize(&mut self, size: Size) {
+    fn handle_resize_command(&mut self, size: Size) {
         self.terminal_size = size;
         self.view.resize(Size {
             height: size.height.saturating_sub(2),
             width: size.width,
         });
-        self.message_bar.resize(Size {
+        let bar_size = Size {
             height: 1,
             width: size.width,
-        });
-        self.status_bar.resize(Size {
-            height: 1,
-            width: size.width,
-        });
+        };
+        self.message_bar.resize(bar_size);
+        self.status_bar.resize(bar_size);
         if let Some(command_bar) = &mut self.command_bar {
-            command_bar.resize(Size {
-                height: 1,
-                width: size.width,
-            });
+            command_bar.resize(bar_size);
         }
     }
 
