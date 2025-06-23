@@ -143,7 +143,7 @@ impl Editor {
             System(Dismiss) => {
                 if self.command_bar.is_none() {
                     self.dismiss_prompt();
-                    self.message_bar.update_message("Save aborted.");
+                    self.update_message("Save aborted.");
                 }
             }
             Edit(edit_command) => {
@@ -171,12 +171,16 @@ impl Editor {
         if !self.view.get_status().is_modified || self.quit_times + 1 == QUIT_TIMES {
             self.should_quit = true;
         } else if self.view.get_status().is_modified {
-            self.message_bar.update_message(&format!(
+            self.update_message(&format!(
                 "WARNING! File has unsaved changes. Press Ctrl+Q {} more times to quit.",
                 QUIT_TIMES - self.quit_times - 1
             ));
             self.quit_times += 1;
         }
+    }
+
+    fn update_message(&mut self, message: &str) {
+        self.message_bar.update_message(message);
     }
 
     fn dismiss_prompt(&mut self) {
@@ -198,7 +202,7 @@ impl Editor {
     fn reset_quit_times(&mut self) {
         if self.quit_times > 0 {
             self.quit_times = 0;
-            self.message_bar.update_message("");
+            self.update_message("");
         }
     }
 
@@ -217,9 +221,9 @@ impl Editor {
             self.view.save()
         };
         if result.is_ok() {
-            self.message_bar.update_message("File saved successfully.");
+            self.update_message("File saved successfully.");
         } else {
-            self.message_bar.update_message("Error writing file!");
+            self.update_message("Error writing file!");
         }
     }
 
