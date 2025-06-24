@@ -55,7 +55,7 @@ pub struct Editor {
     view: View,
     status_bar: StatusBar,
     message_bar: MessageBar,
-    command_bar: Option<CommandBar>,
+    command_bar: CommandBar,
     prompt_type: PromptType,
     terminal_size: Size,
     title: String,
@@ -138,30 +138,17 @@ impl Editor {
             _ => self.reset_quit_times(),
         }
         match command {
-            System(Quit | Resize(_)) => {} // already handled
+            System(Quit | Resize(_) | Dismiss) => {} // already handled or not applicable
             System(Save) => self.handle_save(),
-            System(Dismiss) => {
-                if self.command_bar.is_none() {
-                    self.dismiss_prompt();
-                    self.update_message("Save aborted.");
-                }
-            }
             Edit(edit_command) => {
-                if let Some(command_bar) = &mut self.command_bar {
-                    if matches!(edit_command, command::Edit::InsertNewLine) {
-                        todo!();
-                        self.dismiss_prompt();
-                    } else {
-                        command_bar.handle_edit_command(edit_command);
-                    }
+                if matches!(edit_command, command::Edit::InsertNewLine) {
+                    todo!();
                 } else {
-                    self.view.handle_edit_command(edit_command);
+                    self.command_bar.handle_edit_command(edit_command);
                 }
             }
             Move(move_command) => {
-                if self.command_bar.is_none() {
-                    self.view.handle_move_command(move_command);
-                }
+                self.view.handle_move_command(move_command);
             }
         }
     }
@@ -183,22 +170,6 @@ impl Editor {
         self.message_bar.update_message(message);
     }
 
-    fn dismiss_prompt(&mut self) {
-        self.command_bar = None;
-        self.message_bar.mark_redraw(true);
-    }
-
-    fn show_prompt(&mut self) {
-        let mut command_bar = CommandBar::default();
-        command_bar.set_prompt("Save as: ");
-        command_bar.resize(Size {
-            height: 1,
-            width: self.terminal_size.width,
-        });
-        command_bar.mark_redraw(true);
-        self.command_bar = Some(command_bar);
-    }
-
     fn reset_quit_times(&mut self) {
         if self.quit_times > 0 {
             self.quit_times = 0;
@@ -210,7 +181,7 @@ impl Editor {
         if self.view.is_file_loaded() {
             self.save(None);
         } else {
-            self.show_prompt();
+            todo!();
         }
     }
 
@@ -239,9 +210,11 @@ impl Editor {
         };
         self.message_bar.resize(bar_size);
         self.status_bar.resize(bar_size);
-        if let Some(command_bar) = &mut self.command_bar {
-            command_bar.resize(bar_size);
-        }
+        self.command_bar.resize(bar_size);
+    }
+
+    fn in_prompt(&self) -> bool {
+        !self.prompt_type.is_none()
     }
 
     fn refresh_screen(&mut self) {
@@ -250,8 +223,8 @@ impl Editor {
         }
         let bottom_bar_row = self.terminal_size.height.saturating_sub(1);
         let _ = Terminal::hide_caret();
-        if let Some(command_bar) = &mut self.command_bar {
-            command_bar.render(bottom_bar_row);
+        if self.in_prompt() {
+            self.command_bar.render(bottom_bar_row);
         } else {
             self.message_bar.render(bottom_bar_row);
         }
@@ -263,10 +236,10 @@ impl Editor {
         if self.terminal_size.height > 2 {
             let () = self.view.render(0);
         }
-        let new_caret_pos = if let Some(command_bar) = &self.command_bar {
+        let new_caret_pos = if self.in_prompt() {
             Position {
                 row: bottom_bar_row,
-                col: command_bar.caret_position_col(),
+                col: self.command_bar.caret_position_col(),
             }
         } else {
             self.view.caret_position()
