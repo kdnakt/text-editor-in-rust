@@ -132,11 +132,51 @@ impl Editor {
     }
 
     fn process_command(&mut self, command: Command) {
-        match command {
-            System(Quit) => self.handle_quit(),
-            System(Resize(size)) => self.handle_resize_command(size),
-            _ => self.reset_quit_times(),
+        if let System(Resize(size)) = command {
+            self.handle_resize_command(size);
+            return;
         }
+        match self.prompt_type {
+            PromptType::Save => self.process_command_during_save(command),
+            PromptType::None => self.process_command_no_prompt(command),
+        }
+    }
+
+    fn process_command_during_save(&mut self, command: Command) {
+        match command {
+            // Not applicable during save prompt
+            System(Quit | Resize(_) | Save) | Move(_) => {}
+            System(Dismiss) => {
+                self.set_prompt(PromptType::None);
+                self.update_message("Save aborted.");
+            }
+            Edit(command::Edit::InsertNewLine) => {
+                let file_name = self.command_bar.value();
+                self.save(Some(&file_name));
+                self.set_prompt(PromptType::None);
+            }
+            Edit(edit_command) => {
+                self.command_bar.handle_edit_command(edit_command);
+            }
+        }
+    }
+
+    fn set_prompt(&mut self, prompt_type: PromptType) {
+        match prompt_type {
+            PromptType::Save => self.command_bar.set_prompt("Save as: "),
+            PromptType::None => self.message_bar.mark_redraw(true),
+        }
+        self.command_bar.clear_value();
+        self.prompt_type = prompt_type;
+    }
+
+    fn process_command_no_prompt(&mut self, command: Command) {
+        if matches!(command, System(Quit)) {
+            self.handle_quit_command();
+            return;
+        }
+        self.reset_quit_times();
+
         match command {
             System(Quit | Resize(_) | Dismiss) => {} // already handled or not applicable
             System(Save) => self.handle_save(),
@@ -154,7 +194,7 @@ impl Editor {
     }
 
     #[allow(clippy::arithmetic_side_effects)]
-    fn handle_quit(&mut self) {
+    fn handle_quit_command(&mut self) {
         if !self.view.get_status().is_modified || self.quit_times + 1 == QUIT_TIMES {
             self.should_quit = true;
         } else if self.view.get_status().is_modified {

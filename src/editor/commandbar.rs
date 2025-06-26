@@ -28,6 +28,7 @@ impl CommandBar {
 
     pub fn set_prompt(&mut self, prompt: &str) {
         self.prompt = prompt.to_string();
+        self.mark_redraw(true);
     }
 
     pub fn caret_position_col(&self) -> usize {
@@ -36,6 +37,15 @@ impl CommandBar {
             .len()
             .saturating_add(self.value.grapheme_count());
         min(max_width, self.size.width)
+    }
+
+    pub fn value(&self) -> String {
+        self.value.to_string()
+    }
+
+    pub fn clear_value(&mut self) {
+        self.value = Line::default();
+        self.mark_redraw(true);
     }
 }
 
