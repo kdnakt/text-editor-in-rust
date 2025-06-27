@@ -74,6 +74,7 @@ impl TryFrom<KeyEvent> for Edit {
 #[derive(Clone, Copy)]
 pub enum System {
     Save,
+    Search,
     Resize(Size),
     Quit,
     Dismiss,

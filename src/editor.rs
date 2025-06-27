@@ -19,7 +19,7 @@ mod view;
 
 use command::{
     Command::{self, Edit, Move, System},
-    System::{Dismiss, Quit, Resize, Save},
+    System::{Dismiss, Quit, Resize, Save, Search},
 };
 use commandbar::CommandBar;
 use line::Line;
@@ -41,6 +41,7 @@ enum PromptType {
     #[default]
     None,
     Save,
+    Search,
 }
 
 impl PromptType {
@@ -138,6 +139,7 @@ impl Editor {
         }
         match self.prompt_type {
             PromptType::Save => self.process_command_during_save(command),
+            PromptType::Search => self.process_command_during_search(command),
             PromptType::None => self.process_command_no_prompt(command),
         }
     }
@@ -145,7 +147,7 @@ impl Editor {
     fn process_command_during_save(&mut self, command: Command) {
         match command {
             // Not applicable during save prompt
-            System(Quit | Resize(_) | Save) | Move(_) => {}
+            System(Quit | Resize(_) | Save | Search) | Move(_) => {}
             System(Dismiss) => {
                 self.set_prompt(PromptType::None);
                 self.update_message("Save aborted.");
@@ -161,9 +163,21 @@ impl Editor {
         }
     }
 
+    fn process_command_during_search(&mut self, command: Command) {
+        match command {
+            // Not applicable during search prompt
+            System(Quit | Resize(_) | Save | Search) | Move(_) => {}
+            System(Dismiss) | Edit(command::Edit::InsertNewLine) => {
+                self.set_prompt(PromptType::None)
+            }
+            Edit(edit_command) => self.command_bar.handle_edit_command(edit_command),
+        }
+    }
+
     fn set_prompt(&mut self, prompt_type: PromptType) {
         match prompt_type {
             PromptType::Save => self.command_bar.set_prompt("Save as: "),
+            PromptType::Search => self.command_bar.set_prompt("Search: "),
             PromptType::None => self.message_bar.mark_redraw(true),
         }
         self.command_bar.clear_value();
@@ -179,6 +193,7 @@ impl Editor {
 
         match command {
             System(Quit | Resize(_) | Dismiss) => {} // already handled or not applicable
+            System(Search) => self.set_prompt(PromptType::Search),
             System(Save) => self.handle_save(),
             Edit(edit_command) => {
                 if matches!(edit_command, command::Edit::InsertNewLine) {
