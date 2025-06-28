@@ -22,23 +22,28 @@ struct TextFragment {
     grapheme: String,
     rendered_width: GraphemeWidth,
     replacement: Option<char>,
+    start_byx_idx: usize,
 }
 
 #[derive(Default)]
 pub struct Line {
     fragments: Vec<TextFragment>,
+    string: String,
 }
 
 impl Line {
     pub fn from(line_str: &str) -> Self {
         let fragments = Self::str_to_fragments(line_str);
-        Self { fragments }
+        Self {
+            fragments,
+            string: String::from(line_str),
+        }
     }
 
     fn str_to_fragments(line_str: &str) -> Vec<TextFragment> {
         line_str
-            .graphemes(true)
-            .map(|grapheme| {
+            .grapheme_indices(true)
+            .map(|(byte_idx, grapheme)| {
                 let (replacement, rendered_width) = Self::replacement_character(grapheme)
                     .map_or_else(
                         || {
@@ -55,6 +60,7 @@ impl Line {
                     grapheme: grapheme.to_string(),
                     rendered_width,
                     replacement,
+                    start_byx_idx: byte_idx,
                 }
             })
             .collect()
@@ -153,13 +159,17 @@ impl Line {
     }
 
     pub fn split(&mut self, at: usize) -> Self {
-        if at > self.fragments.len() {
-            return Self::default();
+        if let Some(fragment) = self.fragments.get(at) {
+            let remainder = self.string.split_off(fragment.start_byx_idx);
+            self.rebuild_fragments();
+            Self::from(&remainder)
+        } else {
+            Self::default()
         }
-        let remainder = self.fragments.split_off(at);
-        Self {
-            fragments: remainder,
-        }
+    }
+
+    fn rebuild_fragments(&mut self) {
+        self.fragments = Self::str_to_fragments(&self.string);
     }
 
     pub fn width(&self) -> usize {
