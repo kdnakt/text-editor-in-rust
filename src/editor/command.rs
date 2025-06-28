@@ -91,6 +91,7 @@ impl TryFrom<KeyEvent> for System {
             match code {
                 KeyCode::Char('s') => Ok(Self::Save),
                 KeyCode::Char('q') => Ok(Self::Quit),
+                KeyCode::Char('f') => Ok(Self::Search),
                 _ => Err(format!("Unsupported CONTROL+{code:?} combination")),
             }
         } else if modifiers == KeyModifiers::NONE && matches!(code, KeyCode::Esc) {
