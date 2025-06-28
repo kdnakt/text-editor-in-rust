@@ -232,7 +232,7 @@ impl Editor {
         if self.view.is_file_loaded() {
             self.save(None);
         } else {
-            todo!();
+            self.set_prompt(PromptType::Save);
         }
     }
 
