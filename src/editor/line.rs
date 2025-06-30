@@ -127,35 +127,28 @@ impl Line {
     }
 
     pub fn insert_char(&mut self, character: char, grapheme_index: usize) {
-        let mut result = String::new();
-        for (index, fragment) in self.fragments.iter().enumerate() {
-            if index == grapheme_index {
-                result.push(character);
-            }
-            result.push_str(&fragment.grapheme);
+        if let Some(fragment) = self.fragments.get(grapheme_index) {
+            self.string.insert(fragment.start_byx_idx, character);
+        } else {
+            self.string.push(character);
         }
-        if grapheme_index >= self.fragments.len() {
-            result.push(character);
-        }
-        self.fragments = Self::str_to_fragments(&result);
+        self.rebuild_fragments();
     }
 
     pub fn delete(&mut self, grapheme_index: usize) {
-        let mut result = String::new();
-
-        for (index, fragment) in self.fragments.iter().enumerate() {
-            if index != grapheme_index {
-                result.push_str(&fragment.grapheme);
-            }
+        if let Some(fragment) = self.fragments.get(grapheme_index) {
+            let start = fragment.start_byx_idx;
+            let end = fragment
+                .start_byx_idx
+                .saturating_add(fragment.grapheme.len());
+            self.string.drain(start..end);
+            self.rebuild_fragments();
         }
-
-        self.fragments = Self::str_to_fragments(&result);
     }
 
     pub fn append(&mut self, other: &Self) {
-        let mut concat = self.to_string();
-        concat.push_str(&other.to_string());
-        self.fragments = Self::str_to_fragments(&concat);
+        self.string.push_str(&other.to_string());
+        self.rebuild_fragments();
     }
 
     pub fn split(&mut self, at: usize) -> Self {
