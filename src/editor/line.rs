@@ -176,6 +176,31 @@ impl Line {
     pub fn append_char(&mut self, character: char) {
         self.insert_char(character, self.grapheme_count());
     }
+
+    pub fn search(&self, query: &str) -> Option<usize> {
+        self.string
+            .find(query)
+            .map(|byte_index| self.byte_idx_to_grapheme_index(byte_index))
+    }
+
+    fn byte_idx_to_grapheme_index(&self, byte_index: usize) -> usize {
+        for (index, fragment) in self.fragments.iter().enumerate() {
+            if fragment.start_byx_idx >= byte_index {
+                return index;
+            }
+        }
+        #[cfg(debug_assertions)]
+        {
+            panic!(
+                "Invalid byte index passed to byte_idx_to_grapheme_index: {}",
+                byte_index
+            );
+        }
+        #[cfg(not(debug_assertions))]
+        {
+            0 // Return 0 in release mode to avoid panics
+        }
+    }
 }
 
 impl fmt::Display for Line {

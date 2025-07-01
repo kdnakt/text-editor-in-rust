@@ -163,10 +163,19 @@ impl Editor {
         match command {
             // Not applicable during search prompt
             System(Quit | Resize(_) | Save | Search) | Move(_) => {}
-            System(Dismiss) | Edit(command::Edit::InsertNewLine) => {
-                self.set_prompt(PromptType::None)
+            System(Dismiss) => {
+                self.set_prompt(PromptType::None);
+                self.view.dismiss_search();
             }
-            Edit(edit_command) => self.command_bar.handle_edit_command(edit_command),
+            Edit(command::Edit::InsertNewLine) => {
+                self.set_prompt(PromptType::None);
+                self.view.exit_search();
+            }
+            Edit(edit_command) => {
+                self.command_bar.handle_edit_command(edit_command);
+                let query = self.command_bar.value();
+                self.view.search(&query);
+            }
         }
     }
 

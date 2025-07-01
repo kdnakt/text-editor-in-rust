@@ -102,4 +102,16 @@ impl Buffer {
     pub const fn is_file_loaded(&self) -> bool {
         self.file_info.has_path()
     }
+
+    pub fn search(&self, query: &str) -> Option<Location> {
+        for (line_index, line) in self.lines.iter().enumerate() {
+            if let Some(grapheme_index) = line.search(query) {
+                return Some(Location {
+                    grapheme_index,
+                    line_index,
+                });
+            }
+        }
+        None
+    }
 }
