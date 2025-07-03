@@ -263,6 +263,12 @@ impl View {
         self.buffer.is_file_loaded()
     }
 
+    pub fn enter_search(&mut self) {
+        self.search_info = Some(SearchInfo {
+            prev_location: self.text_location,
+        });
+    }
+
     pub fn exit_search(&mut self) {
         self.search_info = None;
     }

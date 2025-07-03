@@ -182,7 +182,10 @@ impl Editor {
     fn set_prompt(&mut self, prompt_type: PromptType) {
         match prompt_type {
             PromptType::Save => self.command_bar.set_prompt("Save as: "),
-            PromptType::Search => self.command_bar.set_prompt("Search: "),
+            PromptType::Search => {
+                self.view.enter_search();
+                self.command_bar.set_prompt("Search (Esc to cancel): ")
+            }
             PromptType::None => self.message_bar.mark_redraw(true),
         }
         self.command_bar.clear_value();
