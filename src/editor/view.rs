@@ -14,7 +14,6 @@ use super::{
 mod buffer;
 use buffer::Buffer;
 mod fileinfo;
-use fileinfo::FileInfo;
 
 #[derive(Clone, Copy, Default)]
 pub struct Location {
