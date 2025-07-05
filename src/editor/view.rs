@@ -308,8 +308,7 @@ impl UIComponent for View {
     fn draw(&mut self, origin_y: usize) -> Result<(), std::io::Error> {
         let Size { height, width } = self.size;
         let end_y = origin_y.saturating_add(height);
-        #[allow(clippy::integer_division)]
-        let top_third = height / 3;
+        let top_third = height.div_ceil(3);
         let scroll_top = self.scroll_offset.row;
         for current_row in origin_y..end_y {
             let line_index = current_row
