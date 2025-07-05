@@ -9,6 +9,9 @@ enum GraphemeWidth {
     Full,
 }
 
+type GraphemeIdx = usize;
+type ByteIdx = usize;
+
 impl GraphemeWidth {
     fn saturating_add(self, other: usize) -> usize {
         match self {
@@ -18,6 +21,7 @@ impl GraphemeWidth {
     }
 }
 
+#[derive(Clone)]
 struct TextFragment {
     grapheme: String,
     rendered_width: GraphemeWidth,
@@ -25,7 +29,7 @@ struct TextFragment {
     start_byx_idx: usize,
 }
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct Line {
     fragments: Vec<TextFragment>,
     string: String,
@@ -85,7 +89,7 @@ impl Line {
         }
     }
 
-    pub fn get_visible_graphemes(&self, range: Range<usize>) -> String {
+    pub fn get_visible_graphemes(&self, range: Range<GraphemeIdx>) -> String {
         if range.start >= range.end {
             return String::new();
         }
@@ -111,11 +115,11 @@ impl Line {
         result
     }
 
-    pub fn grapheme_count(&self) -> usize {
+    pub fn grapheme_count(&self) -> GraphemeIdx {
         self.fragments.len()
     }
 
-    pub fn width_until(&self, grapheme_index: usize) -> usize {
+    pub fn width_until(&self, grapheme_index: GraphemeIdx) -> GraphemeIdx {
         self.fragments
             .iter()
             .take(grapheme_index)
@@ -126,7 +130,7 @@ impl Line {
             .sum()
     }
 
-    pub fn insert_char(&mut self, character: char, grapheme_index: usize) {
+    pub fn insert_char(&mut self, character: char, grapheme_index: GraphemeIdx) {
         if let Some(fragment) = self.fragments.get(grapheme_index) {
             self.string.insert(fragment.start_byx_idx, character);
         } else {
@@ -135,7 +139,7 @@ impl Line {
         self.rebuild_fragments();
     }
 
-    pub fn delete(&mut self, grapheme_index: usize) {
+    pub fn delete(&mut self, grapheme_index: GraphemeIdx) {
         if let Some(fragment) = self.fragments.get(grapheme_index) {
             let start = fragment.start_byx_idx;
             let end = fragment
@@ -151,7 +155,7 @@ impl Line {
         self.rebuild_fragments();
     }
 
-    pub fn split(&mut self, at: usize) -> Self {
+    pub fn split(&mut self, at: GraphemeIdx) -> Self {
         if let Some(fragment) = self.fragments.get(at) {
             let remainder = self.string.split_off(fragment.start_byx_idx);
             self.rebuild_fragments();
@@ -165,7 +169,7 @@ impl Line {
         self.fragments = Self::str_to_fragments(&self.string);
     }
 
-    pub fn width(&self) -> usize {
+    pub fn width(&self) -> GraphemeIdx {
         self.width_until(self.grapheme_count())
     }
 
@@ -178,28 +182,28 @@ impl Line {
     }
 
     pub fn search(&self, query: &str) -> Option<usize> {
+        // TODO: Handle grapheme indices correctly
+        let from_grapheme_idx = 0;
+        let start_byte_idx = self.grapheme_idx_to_byte_idx(from_grapheme_idx);
         self.string
-            .find(query)
-            .map(|byte_index| self.byte_idx_to_grapheme_index(byte_index))
+            .get(start_byte_idx..)
+            .and_then(|s| s.find(query))
+            .map(|byte_index| {
+                self.byte_idx_to_grapheme_idx(byte_index.saturating_add(start_byte_idx))
+            })
     }
 
-    fn byte_idx_to_grapheme_index(&self, byte_index: usize) -> usize {
-        for (index, fragment) in self.fragments.iter().enumerate() {
-            if fragment.start_byx_idx >= byte_index {
-                return index;
-            }
-        }
-        #[cfg(debug_assertions)]
-        {
-            panic!(
-                "Invalid byte index passed to byte_idx_to_grapheme_index: {}",
-                byte_index
-            );
-        }
-        #[cfg(not(debug_assertions))]
-        {
-            0 // Return 0 in release mode to avoid panics
-        }
+    fn byte_idx_to_grapheme_idx(&self, byte_index: ByteIdx) -> GraphemeIdx {
+        self.fragments
+            .iter()
+            .position(|fragment| fragment.start_byx_idx >= byte_index)
+            .map_or(0, |grapheme_idx| grapheme_idx)
+    }
+
+    fn grapheme_idx_to_byte_idx(&self, grapheme_index: GraphemeIdx) -> ByteIdx {
+        self.fragments
+            .get(grapheme_index)
+            .map_or(0, |fragment| fragment.start_byx_idx)
     }
 }
 
