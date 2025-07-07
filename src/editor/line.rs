@@ -1,4 +1,7 @@
-use std::{fmt, ops::Range};
+use std::{
+    fmt,
+    ops::{Deref, Range},
+};
 
 use unicode_segmentation::UnicodeSegmentation;
 use unicode_width::UnicodeWidthStr;
@@ -210,5 +213,13 @@ impl Line {
 impl fmt::Display for Line {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.string)
+    }
+}
+
+impl Deref for Line {
+    type Target = str;
+
+    fn deref(&self) -> &Self::Target {
+        &self.string
     }
 }
