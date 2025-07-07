@@ -103,9 +103,14 @@ impl Buffer {
         self.file_info.has_path()
     }
 
-    pub fn search(&self, query: &str) -> Option<Location> {
-        for (line_index, line) in self.lines.iter().enumerate() {
-            if let Some(grapheme_index) = line.search(query) {
+    pub fn search(&self, query: &str, from: Location) -> Option<Location> {
+        for (line_index, line) in self.lines.iter().enumerate().skip(from.line_index) {
+            let from_grapheme_index = if line_index == from.line_index {
+                from.grapheme_index
+            } else {
+                0
+            };
+            if let Some(grapheme_index) = line.search(query, from_grapheme_index) {
                 return Some(Location {
                     grapheme_index,
                     line_index,

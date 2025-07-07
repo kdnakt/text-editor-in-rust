@@ -259,6 +259,7 @@ impl View {
     pub fn enter_search(&mut self) {
         self.search_info = Some(SearchInfo {
             prev_location: self.text_location,
+            query: Line::default(),
         });
     }
 
@@ -275,12 +276,27 @@ impl View {
     }
 
     pub fn search(&mut self, query: &str) {
-        if query.is_empty() {
-            return;
+        if let Some(search_info) = &mut self.search_info {
+            search_info.query = Line::from(query);
         }
-        if let Some(location) = self.buffer.search(query) {
-            self.text_location = location;
-            self.scroll_location_into_view();
+        self.search_from(self.text_location);
+    }
+
+    fn search_from(&mut self, from: Location) {
+        if let Some(search_info) = self.search_info.as_ref() {
+            let query = &search_info.query;
+            if query.is_empty() {
+                return;
+            }
+            if let Some(location) = self.buffer.search(query, from) {
+                self.text_location = location;
+                self.scroll_location_into_view();
+            }
+        } else {
+            #[cfg(debug_assertions)]
+            {
+                panic!("Attempting to search_from without search_info");
+            }
         }
     }
 }

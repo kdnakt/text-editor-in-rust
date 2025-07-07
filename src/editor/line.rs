@@ -184,9 +184,7 @@ impl Line {
         self.insert_char(character, self.grapheme_count());
     }
 
-    pub fn search(&self, query: &str) -> Option<usize> {
-        // TODO: Handle grapheme indices correctly
-        let from_grapheme_idx = 0;
+    pub fn search(&self, query: &str, from_grapheme_idx: GraphemeIdx) -> Option<usize> {
         let start_byte_idx = self.grapheme_idx_to_byte_idx(from_grapheme_idx);
         self.string
             .get(start_byte_idx..)
