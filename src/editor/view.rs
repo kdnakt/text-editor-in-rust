@@ -259,6 +259,7 @@ impl View {
     pub fn enter_search(&mut self) {
         self.search_info = Some(SearchInfo {
             prev_location: self.text_location,
+            prev_scroll_offset: self.scroll_offset,
             query: Line::default(),
         });
     }
@@ -270,9 +271,10 @@ impl View {
     pub fn dismiss_search(&mut self) {
         if let Some(info) = &self.search_info {
             self.text_location = info.prev_location;
+            self.scroll_offset = info.prev_scroll_offset;
+            self.mark_redraw(true);
         }
         self.search_info = None;
-        self.scroll_location_into_view();
     }
 
     pub fn search(&mut self, query: &str) {
