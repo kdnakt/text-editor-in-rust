@@ -4,7 +4,7 @@ use super::{
     command::{Edit, Move},
     documentstatus::DocumentStatus,
     line::Line,
-    position::Position,
+    position::{Col, Position, Row},
     size::Size,
     terminal::Terminal,
     uicomponent::UIComponent,
@@ -45,7 +45,7 @@ impl View {
         self.scroll_horizontally(col);
     }
 
-    fn scroll_vertically(&mut self, to: usize) {
+    fn scroll_vertically(&mut self, to: Row) {
         let Size { height, .. } = self.size;
 
         let offset_changed = if to < self.scroll_offset.row {
@@ -62,7 +62,7 @@ impl View {
         }
     }
 
-    fn scroll_horizontally(&mut self, to: usize) {
+    fn scroll_horizontally(&mut self, to: Col) {
         let Size { width, .. } = self.size;
         let offset_changed = if to < self.scroll_offset.col {
             self.scroll_offset.col = to;
