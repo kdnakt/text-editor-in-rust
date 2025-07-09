@@ -19,6 +19,7 @@ mod view;
 
 use command::{
     Command::{self, Edit, Move, System},
+    Move::{Down, Right},
     System::{Dismiss, Quit, Resize, Save, Search},
 };
 use commandbar::CommandBar;
@@ -161,8 +162,6 @@ impl Editor {
 
     fn process_command_during_search(&mut self, command: Command) {
         match command {
-            // Not applicable during search prompt
-            System(Quit | Resize(_) | Save | Search) | Move(_) => {}
             System(Dismiss) => {
                 self.set_prompt(PromptType::None);
                 self.view.dismiss_search();
@@ -176,6 +175,9 @@ impl Editor {
                 let query = self.command_bar.value();
                 self.view.search(&query);
             }
+            Move(Right | Down) => self.view.search_next(),
+            // Not applicable during search prompt
+            System(Quit | Resize(_) | Save | Search) | Move(_) => {}
         }
     }
 

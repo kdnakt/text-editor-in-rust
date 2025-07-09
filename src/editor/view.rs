@@ -1,4 +1,4 @@
-use std::io::Error;
+use std::{cmp::min, io::Error};
 
 use super::{
     command::{Edit, Move},
@@ -298,6 +298,27 @@ impl View {
                 panic!("Attempting to search_from without search_info");
             }
         }
+    }
+
+    pub fn search_next(&mut self) {
+        let step_right;
+        if let Some(search_info) = self.search_info.as_ref() {
+            step_right = min(search_info.query.grapheme_count(), 1);
+        } else {
+            #[cfg(debug_assertions)]
+            {
+                panic!("Attempting to search_next without search_info");
+            }
+            #[cfg(not(debug_assertions))]
+            {
+                return;
+            }
+        }
+        let location = Location {
+            line_index: self.text_location.line_index,
+            grapheme_index: self.text_location.grapheme_index.saturating_add(step_right),
+        };
+        self.search_from(location);
     }
 }
 
