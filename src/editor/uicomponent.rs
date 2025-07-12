@@ -16,7 +16,7 @@ pub trait UIComponent {
     fn render(&mut self, origin_y: usize) {
         if self.needs_redraw() {
             match self.draw(origin_y) {
-                Ok(_) => self.mark_redraw(false),
+                Ok(()) => self.mark_redraw(false),
                 Err(err) => {
                     #[cfg(debug_assertions)]
                     {
