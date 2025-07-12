@@ -205,13 +205,7 @@ impl Editor {
             System(Quit | Resize(_) | Dismiss) => {} // already handled or not applicable
             System(Search) => self.set_prompt(PromptType::Search),
             System(Save) => self.handle_save(),
-            Edit(edit_command) => {
-                if matches!(edit_command, command::Edit::InsertNewLine) {
-                    todo!();
-                } else {
-                    self.command_bar.handle_edit_command(edit_command);
-                }
-            }
+            Edit(edit_command) => self.view.handle_edit_command(edit_command),
             Move(move_command) => {
                 self.view.handle_move_command(move_command);
             }
