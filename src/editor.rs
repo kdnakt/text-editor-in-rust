@@ -186,7 +186,7 @@ impl Editor {
             PromptType::Save => self.command_bar.set_prompt("Save as: "),
             PromptType::Search => {
                 self.view.enter_search();
-                self.command_bar.set_prompt("Search (Esc to cancel): ")
+                self.command_bar.set_prompt("Search (Esc to cancel): ");
             }
             PromptType::None => self.message_bar.mark_redraw(true),
         }
