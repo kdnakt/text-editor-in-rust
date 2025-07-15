@@ -19,7 +19,7 @@ mod view;
 
 use command::{
     Command::{self, Edit, Move, System},
-    Move::{Down, Right},
+    Move::{Down, Left, Right, Up},
     System::{Dismiss, Quit, Resize, Save, Search},
 };
 use commandbar::CommandBar;
@@ -181,6 +181,7 @@ impl Editor {
                 self.view.search(&query);
             }
             Move(Right | Down) => self.view.search_next(),
+            Move(Up | Left) => self.view.search_prev(),
             // Not applicable during search prompt
             System(Quit | Resize(_) | Save | Search) | Move(_) => {}
         }
