@@ -311,11 +311,9 @@ impl View {
             if query.is_empty() {
                 None
             } else if direction == SearchDirection::Forward {
-                todo!()
-                // self.buffer.search_forward(query, from)
+                self.buffer.search_forward(query, from)
             } else {
-                todo!()
-                // self.buffer.search_backward(query, from)
+                self.buffer.search_backward(query, from)
             }
         }) {
             self.text_location = location;

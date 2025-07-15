@@ -184,7 +184,15 @@ impl Line {
         self.insert_char(character, self.grapheme_count());
     }
 
-    pub fn search(&self, query: &str, from_grapheme_idx: GraphemeIdx) -> Option<usize> {
+    pub fn search_forward(
+        &self,
+        query: &str,
+        from_grapheme_idx: GraphemeIdx,
+    ) -> Option<GraphemeIdx> {
+        debug_assert!(from_grapheme_idx <= self.grapheme_count());
+        if from_grapheme_idx == self.grapheme_count() {
+            return None;
+        }
         let start_byte_idx = self.grapheme_idx_to_byte_idx(from_grapheme_idx);
         self.string
             .get(start_byte_idx..)
@@ -192,6 +200,26 @@ impl Line {
             .map(|byte_index| {
                 self.byte_idx_to_grapheme_idx(byte_index.saturating_add(start_byte_idx))
             })
+    }
+
+    pub fn search_backward(
+        &self,
+        query: &str,
+        from_grapheme_idx: GraphemeIdx,
+    ) -> Option<GraphemeIdx> {
+        debug_assert!(from_grapheme_idx <= self.grapheme_count());
+        if from_grapheme_idx == 0 {
+            return None;
+        }
+        let end_byte_index = if from_grapheme_idx == self.grapheme_count() {
+            self.string.len()
+        } else {
+            self.grapheme_idx_to_byte_idx(from_grapheme_idx)
+        };
+        self.string
+            .get(..end_byte_index)
+            .and_then(|s| s.match_indices(query).last())
+            .map(|(index, _)| self.byte_idx_to_grapheme_idx(index))
     }
 
     fn byte_idx_to_grapheme_idx(&self, byte_index: ByteIdx) -> GraphemeIdx {
