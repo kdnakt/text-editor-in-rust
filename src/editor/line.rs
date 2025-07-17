@@ -40,6 +40,7 @@ pub struct Line {
 
 impl Line {
     pub fn from(line_str: &str) -> Self {
+        debug_assert!(line_str.is_empty() || line_str.lines().count() == 1);
         let fragments = Self::str_to_fragments(line_str);
         Self {
             fragments,
@@ -134,6 +135,7 @@ impl Line {
     }
 
     pub fn insert_char(&mut self, character: char, grapheme_index: GraphemeIdx) {
+        debug_assert!(grapheme_index.saturating_sub(1) <= self.grapheme_count());
         if let Some(fragment) = self.fragments.get(grapheme_index) {
             self.string.insert(fragment.start_byx_idx, character);
         } else {
@@ -143,6 +145,7 @@ impl Line {
     }
 
     pub fn delete(&mut self, grapheme_index: GraphemeIdx) {
+        debug_assert!(grapheme_index < self.grapheme_count());
         if let Some(fragment) = self.fragments.get(grapheme_index) {
             let start = fragment.start_byx_idx;
             let end = fragment
@@ -223,16 +226,43 @@ impl Line {
     }
 
     fn byte_idx_to_grapheme_idx(&self, byte_index: ByteIdx) -> GraphemeIdx {
+        debug_assert!(byte_index <= self.string.len());
         self.fragments
             .iter()
             .position(|fragment| fragment.start_byx_idx >= byte_index)
-            .map_or(0, |grapheme_idx| grapheme_idx)
+            .map_or_else(
+                || {
+                    #[cfg(debug_assertions)]
+                    {
+                        panic!("Fragment not found for byte index: {byte_index:?}");
+                    }
+                    #[cfg(not(debug_assertions))]
+                    {
+                        0
+                    }
+                },
+                |grapheme_idx| grapheme_idx,
+            )
     }
 
     fn grapheme_idx_to_byte_idx(&self, grapheme_index: GraphemeIdx) -> ByteIdx {
-        self.fragments
-            .get(grapheme_index)
-            .map_or(0, |fragment| fragment.start_byx_idx)
+        debug_assert!(grapheme_index <= self.grapheme_count());
+        if grapheme_index == 0 || self.grapheme_count() == 0 {
+            return 0;
+        }
+        self.fragments.get(grapheme_index).map_or_else(
+            || {
+                #[cfg(debug_assertions)]
+                {
+                    panic!("Fragment not found for grapheme index: {grapheme_index:?}");
+                }
+                #[cfg(not(debug_assertions))]
+                {
+                    0
+                }
+            },
+            |fragment| fragment.start_byx_idx,
+        )
     }
 }
 
