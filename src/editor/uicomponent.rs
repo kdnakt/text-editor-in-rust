@@ -15,14 +15,17 @@ pub trait UIComponent {
 
     fn render(&mut self, origin_y: usize) {
         if self.needs_redraw() {
-            match self.draw(origin_y) {
-                Ok(()) => self.mark_redraw(false),
-                Err(err) => {
-                    #[cfg(debug_assertions)]
-                    {
-                        panic!("Error rendering UIComponent: {err:?}");
-                    }
+            if let Err(err) = self.draw(origin_y) {
+                #[cfg(debug_assertions)]
+                {
+                    panic!("Error rendering UIComponent: {err:?}");
                 }
+                #[cfg(not(debug_assertions))]
+                {
+                    let _ = err;
+                }
+            } else {
+                self.mark_redraw(false);
             }
         }
     }
