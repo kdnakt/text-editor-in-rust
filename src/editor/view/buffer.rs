@@ -56,9 +56,7 @@ impl Buffer {
     }
 
     pub fn insert_char(&mut self, character: char, at: Location) {
-        if at.line_index > self.height() {
-            return;
-        }
+        debug_assert!(at.line_index <= self.height());
         if at.line_index == self.height() {
             self.lines.push(Line::from(&character.to_string()));
             self.dirty = true;
