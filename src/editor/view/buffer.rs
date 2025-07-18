@@ -40,6 +40,11 @@ impl Buffer {
             for line in &self.lines {
                 writeln!(file, "{line}")?;
             }
+        } else {
+            #[cfg(debug_assertions)]
+            {
+                panic!("Attempting to save a file without a valid path.");
+            }
         }
         Ok(())
     }
