@@ -279,7 +279,7 @@ impl View {
         if let Some(info) = &self.search_info {
             self.text_location = info.prev_location;
             self.scroll_offset = info.prev_scroll_offset;
-            self.mark_redraw(true);
+            self.scroll_location_into_view();
         }
         self.search_info = None;
     }
