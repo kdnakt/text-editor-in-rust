@@ -124,6 +124,7 @@ impl View {
 
     fn text_location_to_position(&self) -> Position {
         let row = self.text_location.line_index;
+        debug_assert!(row.saturating_sub(1) <= self.buffer.lines.len());
         let col = self.buffer.lines.get(row).map_or(0, |line| {
             line.width_until(self.text_location.grapheme_index)
         });
