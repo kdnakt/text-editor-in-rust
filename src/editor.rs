@@ -211,9 +211,7 @@ impl Editor {
             System(Search) => self.set_prompt(PromptType::Search),
             System(Save) => self.handle_save(),
             Edit(edit_command) => self.view.handle_edit_command(edit_command),
-            Move(move_command) => {
-                self.view.handle_move_command(move_command);
-            }
+            Move(move_command) => self.view.handle_move_command(move_command),
         }
     }
 
