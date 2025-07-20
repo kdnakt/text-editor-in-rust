@@ -75,7 +75,7 @@ impl Buffer {
                 #[allow(clippy::indexing_slicing)]
                 self.lines[at.line_index].append(&next_line);
                 self.dirty = true;
-            } else {
+            } else if at.grapheme_index < line.grapheme_count() {
                 #[allow(clippy::indexing_slicing)]
                 self.lines[at.line_index].delete(at.grapheme_index);
                 self.dirty = true;
