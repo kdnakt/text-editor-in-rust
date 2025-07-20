@@ -293,12 +293,11 @@ impl Editor {
             self.message_bar.render(bottom_bar_row);
         }
         if self.terminal_size.height > 1 {
-            let () = self
-                .status_bar
+            self.status_bar
                 .render(self.terminal_size.height.saturating_sub(2));
         }
         if self.terminal_size.height > 2 {
-            let () = self.view.render(0);
+            self.view.render(0);
         }
         let new_caret_pos = if self.in_prompt() {
             Position {
