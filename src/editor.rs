@@ -75,6 +75,7 @@ impl Editor {
         let mut editor = Self::default();
         let size = Terminal::size().unwrap_or_default();
         editor.handle_resize_command(size);
+        editor.update_message("HELP: Ctrl+F = find | Ctrl+S = save | Ctrl+Q = quit");
         let args: Vec<String> = env::args().collect();
         if let Some(file_name) = args.get(1) {
             debug_assert!(!file_name.is_empty());
@@ -82,7 +83,6 @@ impl Editor {
                 editor.update_message(&format!("ERR: Could not open file: {file_name}"));
             }
         }
-        editor.update_message("HELP: Ctrl+F = find | Ctrl+S = save | Ctrl+Q = quit");
         editor.refresh_status();
         Ok(editor)
     }
@@ -115,8 +115,7 @@ impl Editor {
                     }
                 }
             }
-            let status = self.view.get_status();
-            self.status_bar.update_status(status);
+            self.refresh_status();
         }
     }
 
