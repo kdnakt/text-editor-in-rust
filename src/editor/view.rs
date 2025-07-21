@@ -318,8 +318,18 @@ impl View {
             }
         }) {
             self.text_location = location;
-            self.scroll_location_into_view();
+            self.center_text_location();
         }
+    }
+
+    fn center_text_location(&mut self) {
+        let Size { height, width } = self.size;
+        let Position { row, col } = self.text_location_to_position();
+        let vertical_mid = height.div_ceil(2);
+        let horizontal_mid = width.div_ceil(2);
+        self.scroll_offset.row = row.saturating_sub(vertical_mid);
+        self.scroll_offset.col = col.saturating_sub(horizontal_mid);
+        self.mark_redraw(true);
     }
 
     pub fn get_search_query(&self) -> Option<&Line> {
