@@ -2,7 +2,7 @@ use std::cmp::min;
 
 use super::command::Edit;
 use super::terminal::Terminal;
-use super::uicomponent::UIComponent;
+use super::uicomponents::UIComponent;
 use super::Line;
 use super::Size;
 

@@ -7,7 +7,7 @@ use super::{
     position::{Col, Position, Row},
     size::Size,
     terminal::Terminal,
-    uicomponent::UIComponent,
+    uicomponents::UIComponent,
     NAME, VERSION,
 };
 

@@ -1,6 +1,6 @@
 use std::time::{Duration, Instant};
 
-use super::{size::Size, terminal::Terminal, uicomponent::UIComponent};
+use super::{size::Size, terminal::Terminal, uicomponents::UIComponent};
 
 #[derive(Default)]
 pub struct MessageBar {

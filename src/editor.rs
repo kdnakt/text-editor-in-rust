@@ -14,7 +14,7 @@ mod position;
 mod size;
 mod statusbar;
 mod terminal;
-mod uicomponent;
+mod uicomponents;
 mod view;
 
 use command::{
@@ -29,7 +29,7 @@ use position::Position;
 use size::Size;
 use statusbar::StatusBar;
 use terminal::Terminal;
-use uicomponent::UIComponent;
+use uicomponents::UIComponent;
 use view::View;
 
 pub const NAME: &str = env!("CARGO_PKG_NAME");
