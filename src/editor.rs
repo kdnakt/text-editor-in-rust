@@ -11,7 +11,6 @@ mod documentstatus;
 mod line;
 mod position;
 mod size;
-mod statusbar;
 mod terminal;
 mod uicomponents;
 mod view;
@@ -25,9 +24,8 @@ use commandbar::CommandBar;
 use line::Line;
 use position::Position;
 use size::Size;
-use statusbar::StatusBar;
 use terminal::Terminal;
-use uicomponents::{MessageBar, UIComponent};
+use uicomponents::{MessageBar, StatusBar, UIComponent};
 use view::View;
 
 pub const NAME: &str = env!("CARGO_PKG_NAME");
