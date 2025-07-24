@@ -9,7 +9,6 @@ mod command;
 mod commandbar;
 mod documentstatus;
 mod line;
-mod messagebar;
 mod position;
 mod size;
 mod statusbar;
@@ -24,12 +23,11 @@ use command::{
 };
 use commandbar::CommandBar;
 use line::Line;
-use messagebar::MessageBar;
 use position::Position;
 use size::Size;
 use statusbar::StatusBar;
 use terminal::Terminal;
-use uicomponents::UIComponent;
+use uicomponents::{MessageBar, UIComponent};
 use view::View;
 
 pub const NAME: &str = env!("CARGO_PKG_NAME");
