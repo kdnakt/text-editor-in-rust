@@ -7,13 +7,15 @@ use super::{
     position::{Col, Position, Row},
     size::Size,
     terminal::Terminal,
-    uicomponents::UIComponent,
     NAME, VERSION,
 };
+
+use super::UIComponent;
 
 mod buffer;
 use buffer::Buffer;
 mod fileinfo;
+use fileinfo::FileInfo;
 mod location;
 use location::Location;
 mod searchinfo;
