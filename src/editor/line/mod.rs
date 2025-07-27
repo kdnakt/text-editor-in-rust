@@ -6,23 +6,12 @@ use std::{
 use unicode_segmentation::UnicodeSegmentation;
 use unicode_width::UnicodeWidthStr;
 
-#[derive(Clone, Copy)]
-enum GraphemeWidth {
-    Half,
-    Full,
-}
+mod graphemewidth;
+
+use graphemewidth::GraphemeWidth;
 
 type GraphemeIdx = usize;
 type ByteIdx = usize;
-
-impl GraphemeWidth {
-    fn saturating_add(self, other: usize) -> usize {
-        match self {
-            GraphemeWidth::Half => other.saturating_add(1),
-            GraphemeWidth::Full => other.saturating_add(2),
-        }
-    }
-}
 
 #[derive(Clone)]
 struct TextFragment {
