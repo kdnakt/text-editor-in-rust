@@ -18,15 +18,10 @@ mod fileinfo;
 use fileinfo::FileInfo;
 mod location;
 use location::Location;
+mod searchdirection;
+use searchdirection::SearchDirection;
 mod searchinfo;
 use searchinfo::SearchInfo;
-
-#[derive(Default, Clone, Copy, PartialEq, Eq)]
-pub enum SearchDirection {
-    #[default]
-    Forward,
-    Backward,
-}
 
 #[derive(Default)]
 pub struct View {
