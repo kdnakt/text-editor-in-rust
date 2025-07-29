@@ -1,10 +1,10 @@
 use std::cmp::min;
 
-use super::command::Edit;
-use super::terminal::Terminal;
-use super::uicomponents::UIComponent;
-use super::Line;
-use super::Size;
+use super::super::command::Edit;
+use super::super::terminal::Terminal;
+use super::super::Line;
+use super::super::Size;
+use super::UIComponent;
 
 #[derive(Default)]
 pub struct CommandBar {

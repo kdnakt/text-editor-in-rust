@@ -6,7 +6,6 @@ use crossterm::event::read;
 use crossterm::event::{Event, KeyEvent, KeyEventKind};
 
 mod command;
-mod commandbar;
 mod documentstatus;
 mod line;
 mod position;
@@ -20,12 +19,11 @@ use command::{
     Move::{Down, Left, Right, Up},
     System::{Dismiss, Quit, Resize, Save, Search},
 };
-use commandbar::CommandBar;
 use line::Line;
 use position::Position;
 use size::Size;
 use terminal::Terminal;
-use uicomponents::{MessageBar, StatusBar, UIComponent};
+use uicomponents::{CommandBar, MessageBar, StatusBar, UIComponent};
 use view::View;
 
 pub const NAME: &str = env!("CARGO_PKG_NAME");
