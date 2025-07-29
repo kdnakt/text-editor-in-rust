@@ -1,3 +1,5 @@
+mod attribute;
+
 use std::{
     fmt::Display,
     io::{stdout, Error, Write},
