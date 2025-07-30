@@ -5,6 +5,7 @@ use std::panic::set_hook;
 use crossterm::event::read;
 use crossterm::event::{Event, KeyEvent, KeyEventKind};
 
+mod annotatedstring;
 mod command;
 mod documentstatus;
 mod line;
@@ -14,6 +15,7 @@ mod terminal;
 mod uicomponents;
 mod view;
 
+use annotatedstring::AnnotatedString;
 use command::{
     Command::{self, Edit, Move, System},
     Move::{Down, Left, Right, Up},
