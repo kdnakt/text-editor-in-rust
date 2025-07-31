@@ -1,4 +1,6 @@
 mod annotation;
+use std::fmt::Display;
+
 use annotation::Annotation;
 pub mod annotationtype;
 pub use annotationtype::AnnotationType;
@@ -9,8 +11,23 @@ use annotatedstringpart::AnnotatedStringPart;
 
 #[derive(Default, Debug)]
 pub struct AnnotatedString {
-    pub text: String,
-    pub annotations: Vec<Annotation>,
+    string: String,
+    annotations: Vec<Annotation>,
+}
+
+impl AnnotatedString {
+    pub fn new(string: &str) -> Self {
+        Self {
+            string: String::from(string),
+            annotations: Vec::new(),
+        }
+    }
+}
+
+impl Display for AnnotatedString {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.string)
+    }
 }
 
 impl<'a> IntoIterator for &'a AnnotatedString {
