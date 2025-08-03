@@ -77,10 +77,21 @@ impl Terminal {
         Self::move_caret_to(Position { col: 0, row })?;
         Self::clear_line()?;
 
-        todo!()
+        annotated_string
+            .into_iter()
+            .try_for_each(|part| -> Result<(), Error> {
+                if let Some(annotation_type) = part.annotation_type {
+                    let attribute: Attribute = annotation_type.into();
+                    Self::set_attribute(&attribute)?;
+                }
+                Self::print(part.string)?;
+                Self::reset_color()?;
+                Ok(())
+            })?;
+        Ok(())
     }
 
-    fn set_attribute(attribute: Attribute) -> Result<(), Error> {
+    fn set_attribute(attribute: &Attribute) -> Result<(), Error> {
         if let Some(foreground_color) = attribute.foreground {
             Self::queue_command(SetForegroundColor(foreground_color))?;
         }
