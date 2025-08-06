@@ -1,4 +1,5 @@
-use crate::editor::{line::Line, position::Position};
+use crate::editor::line::Line;
+use crate::prelude::*;
 
 use super::location::Location;
 

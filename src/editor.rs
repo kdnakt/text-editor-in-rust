@@ -2,6 +2,7 @@ use std::env;
 use std::io::Error;
 use std::panic::set_hook;
 
+use crate::prelude::*;
 use crossterm::event::read;
 use crossterm::event::{Event, KeyEvent, KeyEventKind};
 
@@ -9,7 +10,6 @@ mod annotatedstring;
 mod command;
 mod documentstatus;
 mod line;
-mod position;
 mod size;
 mod terminal;
 mod uicomponents;
@@ -22,7 +22,6 @@ use command::{
     System::{Dismiss, Quit, Resize, Save, Search},
 };
 use line::Line;
-use position::Position;
 use size::Size;
 use terminal::Terminal;
 use uicomponents::{CommandBar, MessageBar, StatusBar, UIComponent};

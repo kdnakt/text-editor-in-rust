@@ -1,5 +1,4 @@
-pub type Row = usize;
-pub type Col = usize;
+use super::{Col, Row};
 
 #[derive(Clone, Copy, Default)]
 pub struct Position {

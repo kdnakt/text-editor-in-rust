@@ -1,10 +1,11 @@
 use std::{cmp::min, io::Error};
 
+use crate::prelude::*;
+
 use super::{
     command::{Edit, Move},
     documentstatus::DocumentStatus,
     line::Line,
-    position::{Col, Position, Row},
     size::Size,
     terminal::Terminal,
     NAME, VERSION,

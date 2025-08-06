@@ -19,7 +19,9 @@ use crossterm::{
     Command,
 };
 
-use super::{annotatedstring::AnnotatedString, position::Position, size::Size};
+use crate::prelude::*;
+
+use super::{annotatedstring::AnnotatedString, size::Size};
 use attribute::Attribute;
 
 /// Represents the Terminal.
