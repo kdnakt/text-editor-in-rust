@@ -1,3 +1,4 @@
+use crate::prelude::*;
 use std::{
     fmt,
     ops::{Deref, Range},
@@ -11,10 +12,6 @@ mod graphemewidth;
 use graphemewidth::GraphemeWidth;
 
 use super::annotatedstring::{AnnotatedString, AnnotationType};
-
-type GraphemeIdx = usize;
-type ByteIdx = usize;
-type ColIdx = usize;
 
 #[derive(Clone)]
 struct TextFragment {
