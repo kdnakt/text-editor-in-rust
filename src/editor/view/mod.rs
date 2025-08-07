@@ -17,8 +17,6 @@ mod buffer;
 use buffer::Buffer;
 mod fileinfo;
 use fileinfo::FileInfo;
-mod location;
-use location::Location;
 mod searchdirection;
 use searchdirection::SearchDirection;
 mod searchinfo;
