@@ -21,7 +21,7 @@ use crossterm::{
 
 use crate::prelude::*;
 
-use super::{annotatedstring::AnnotatedString, size::Size};
+use super::annotatedstring::AnnotatedString;
 use attribute::Attribute;
 
 /// Represents the Terminal.

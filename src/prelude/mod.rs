@@ -8,3 +8,5 @@ mod location;
 pub use location::Location;
 mod position;
 pub use position::Position;
+mod size;
+pub use size::Size;

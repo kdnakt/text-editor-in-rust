@@ -6,7 +6,6 @@ use super::{
     command::{Edit, Move},
     documentstatus::DocumentStatus,
     line::Line,
-    size::Size,
     terminal::Terminal,
     NAME, VERSION,
 };

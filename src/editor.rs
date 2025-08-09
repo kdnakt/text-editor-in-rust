@@ -10,7 +10,6 @@ mod annotatedstring;
 mod command;
 mod documentstatus;
 mod line;
-mod size;
 mod terminal;
 mod uicomponents;
 mod view;
@@ -22,7 +21,6 @@ use command::{
     System::{Dismiss, Quit, Resize, Save, Search},
 };
 use line::Line;
-use size::Size;
 use terminal::Terminal;
 use uicomponents::{CommandBar, MessageBar, StatusBar, UIComponent};
 use view::View;

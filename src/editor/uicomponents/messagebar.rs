@@ -1,6 +1,8 @@
 use std::time::{Duration, Instant};
 
-use super::super::{size::Size, terminal::Terminal};
+use crate::prelude::*;
+
+use super::super::terminal::Terminal;
 use super::UIComponent;
 
 #[derive(Default)]

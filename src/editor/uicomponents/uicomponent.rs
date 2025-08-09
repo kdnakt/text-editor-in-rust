@@ -1,6 +1,6 @@
 use std::io::Error;
 
-use super::super::size::Size;
+use crate::prelude::*;
 
 pub trait UIComponent {
     fn mark_redraw(&mut self, value: bool);

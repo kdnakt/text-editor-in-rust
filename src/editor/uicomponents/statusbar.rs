@@ -1,4 +1,6 @@
-use super::super::{documentstatus::DocumentStatus, size::Size, terminal::Terminal};
+use crate::prelude::*;
+
+use super::super::{documentstatus::DocumentStatus, terminal::Terminal};
 use super::UIComponent;
 
 #[derive(Default)]
