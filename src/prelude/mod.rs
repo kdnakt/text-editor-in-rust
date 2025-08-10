@@ -10,3 +10,6 @@ mod position;
 pub use position::Position;
 mod size;
 pub use size::Size;
+
+pub const NAME: &str = env!("CARGO_PKG_NAME");
+pub const VERSION: &str = env!("CARGO_PKG_VERSION");

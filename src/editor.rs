@@ -25,9 +25,6 @@ use terminal::Terminal;
 use uicomponents::{CommandBar, MessageBar, StatusBar, UIComponent};
 use view::View;
 
-pub const NAME: &str = env!("CARGO_PKG_NAME");
-pub const VERSION: &str = env!("CARGO_PKG_VERSION");
-
 const QUIT_TIMES: u8 = 3;
 
 #[derive(Eq, PartialEq, Default)]
