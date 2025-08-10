@@ -15,7 +15,6 @@ use super::UIComponent;
 mod buffer;
 use buffer::Buffer;
 mod fileinfo;
-use fileinfo::FileInfo;
 mod searchdirection;
 use searchdirection::SearchDirection;
 mod searchinfo;

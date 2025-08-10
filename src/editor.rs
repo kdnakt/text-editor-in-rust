@@ -14,7 +14,6 @@ mod terminal;
 mod uicomponents;
 mod view;
 
-use annotatedstring::AnnotatedString;
 use command::{
     Command::{self, Edit, Move, System},
     Move::{Down, Left, Right, Up},
