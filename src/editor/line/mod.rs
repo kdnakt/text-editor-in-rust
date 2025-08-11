@@ -18,7 +18,7 @@ struct TextFragment {
     grapheme: String,
     rendered_width: GraphemeWidth,
     replacement: Option<char>,
-    start_byx_idx: usize,
+    start_byx_idx: ByteIdx,
 }
 
 #[derive(Default, Clone)]
