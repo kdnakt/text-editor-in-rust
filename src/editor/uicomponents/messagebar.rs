@@ -58,7 +58,7 @@ impl UIComponent for MessageBar {
         // MessageBar does not need to handle size changes
     }
 
-    fn draw(&mut self, origin: usize) -> Result<(), std::io::Error> {
+    fn draw(&mut self, origin: Row) -> Result<(), std::io::Error> {
         let message = if self.current_message.is_expired() {
             self.cleared_after_expiry = true;
             ""

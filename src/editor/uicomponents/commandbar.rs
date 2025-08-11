@@ -1,9 +1,10 @@
 use std::cmp::min;
 
+use crate::prelude::*;
+
 use super::super::command::Edit;
 use super::super::terminal::Terminal;
 use super::super::Line;
-use super::super::Size;
 use super::UIComponent;
 
 #[derive(Default)]
@@ -31,7 +32,7 @@ impl CommandBar {
         self.mark_redraw(true);
     }
 
-    pub fn caret_position_col(&self) -> usize {
+    pub fn caret_position_col(&self) -> Col {
         let max_width = self
             .prompt
             .len()
@@ -62,7 +63,7 @@ impl UIComponent for CommandBar {
         self.size = to;
     }
 
-    fn draw(&mut self, origin_y: usize) -> Result<(), std::io::Error> {
+    fn draw(&mut self, origin_y: Row) -> Result<(), std::io::Error> {
         let area_for_value = self.size.width.saturating_sub(self.prompt.len());
         let value_end = self.value.width();
         let value_start = value_end.saturating_sub(area_for_value);
