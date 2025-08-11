@@ -8,18 +8,11 @@ use unicode_segmentation::UnicodeSegmentation;
 use unicode_width::UnicodeWidthStr;
 
 mod graphemewidth;
-
+mod textfragment;
 use graphemewidth::GraphemeWidth;
+use textfragment::TextFragment;
 
 use super::annotatedstring::{AnnotatedString, AnnotationType};
-
-#[derive(Clone)]
-struct TextFragment {
-    grapheme: String,
-    rendered_width: GraphemeWidth,
-    replacement: Option<char>,
-    start_byx_idx: ByteIdx,
-}
 
 #[derive(Default, Clone)]
 pub struct Line {
