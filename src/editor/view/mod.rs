@@ -79,7 +79,7 @@ impl View {
         }
     }
 
-    pub fn render_line(at: usize, line_text: &str) -> Result<(), Error> {
+    pub fn render_line(at: Row, line_text: &str) -> Result<(), Error> {
         Terminal::print_row(at, line_text)
     }
 
@@ -268,6 +268,7 @@ impl View {
 
     pub fn exit_search(&mut self) {
         self.search_info = None;
+        self.mark_redraw(true);
     }
 
     pub fn dismiss_search(&mut self) {
@@ -276,7 +277,7 @@ impl View {
             self.scroll_offset = info.prev_scroll_offset;
             self.scroll_location_into_view();
         }
-        self.search_info = None;
+        self.exit_search();
     }
 
     pub fn search(&mut self, query: &str) {
@@ -353,7 +354,7 @@ impl UIComponent for View {
         self.scroll_location_into_view();
     }
 
-    fn draw(&mut self, origin_y: usize) -> Result<(), std::io::Error> {
+    fn draw(&mut self, origin_y: Row) -> Result<(), std::io::Error> {
         let Size { height, width } = self.size;
         let end_y = origin_y.saturating_add(height);
         let top_third = height.div_ceil(3);
