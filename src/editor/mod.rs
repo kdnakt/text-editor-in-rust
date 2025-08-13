@@ -12,17 +12,16 @@ mod documentstatus;
 mod line;
 mod terminal;
 mod uicomponents;
-mod view;
 
 use command::{
     Command::{self, Edit, Move, System},
     Move::{Down, Left, Right, Up},
     System::{Dismiss, Quit, Resize, Save, Search},
 };
+use documentstatus::DocumentStatus;
 use line::Line;
 use terminal::Terminal;
-use uicomponents::{CommandBar, MessageBar, StatusBar, UIComponent};
-use view::View;
+use uicomponents::{CommandBar, MessageBar, StatusBar, UIComponent, View};
 
 const QUIT_TIMES: u8 = 3;
 

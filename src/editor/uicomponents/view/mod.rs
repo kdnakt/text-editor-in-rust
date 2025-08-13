@@ -2,19 +2,17 @@ use std::{cmp::min, io::Error};
 
 use crate::prelude::*;
 
-use super::{
-    command::{Edit, Move},
-    documentstatus::DocumentStatus,
-    line::Line,
-    terminal::Terminal,
-    NAME, VERSION,
-};
-
 use super::UIComponent;
+
+use super::super::command::{Edit, Move};
+use super::super::DocumentStatus;
+use super::super::Line;
+use super::super::Terminal;
 
 mod buffer;
 use buffer::Buffer;
 mod fileinfo;
+use fileinfo::FileInfo;
 mod searchdirection;
 use searchdirection::SearchDirection;
 mod searchinfo;
