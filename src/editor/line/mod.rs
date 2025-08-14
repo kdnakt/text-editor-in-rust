@@ -125,7 +125,7 @@ impl Line {
                 result.replace(fragment.start_byx_idx, self.string.len(), "⋯");
                 continue;
             } else if fragment_start == range.end {
-                result.replace(fragment.start_byx_idx, self.string.len(), "");
+                result.truncate_right_from(fragment.start_byx_idx);
                 continue;
             }
             if fragment_end <= range.start {

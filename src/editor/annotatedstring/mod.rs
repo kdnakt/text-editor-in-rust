@@ -9,6 +9,8 @@ use annotatedstringiterator::AnnotatedStringIterator;
 mod annotatedstringpart;
 use annotatedstringpart::AnnotatedStringPart;
 
+use crate::prelude::ByteIdx;
+
 #[derive(Default, Debug)]
 pub struct AnnotatedString {
     string: String,
@@ -37,9 +39,14 @@ impl AnnotatedString {
         });
     }
 
-    pub fn replace(&mut self, start_byte_idx: usize, end_byte_idx: usize, new_string: &str) {
-        debug_assert!(start_byte_idx <= end_byte_idx);
+    pub fn truncate_right_from(&mut self, from: ByteIdx) {
+        self.replace(from, self.string.len(), "");
+    }
+
+    pub fn replace(&mut self, start_byte_idx: ByteIdx, end_byte_idx: ByteIdx, new_string: &str) {
         let end_byte_idx = end_byte_idx.min(self.string.len());
+        debug_assert!(start_byte_idx <= end_byte_idx);
+        debug_assert!(start_byte_idx <= self.string.len());
         if end_byte_idx < start_byte_idx {
             return;
         }
