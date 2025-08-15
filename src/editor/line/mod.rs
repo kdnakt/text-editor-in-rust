@@ -129,12 +129,10 @@ impl Line {
                 continue;
             }
             if fragment_end <= range.start {
-                result.replace(
-                    0,
+                result.truncate_left_until(
                     fragment
                         .start_byx_idx
                         .saturating_add(fragment.grapheme.len()),
-                    "",
                 );
                 break;
             } else if fragment_start < range.start && range.start < fragment_end {

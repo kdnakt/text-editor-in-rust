@@ -39,6 +39,10 @@ impl AnnotatedString {
         });
     }
 
+    pub fn truncate_left_until(&mut self, until: ByteIdx) {
+        self.replace(0, until, "");
+    }
+
     pub fn truncate_right_from(&mut self, from: ByteIdx) {
         self.replace(from, self.string.len(), "");
     }
