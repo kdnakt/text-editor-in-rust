@@ -1,4 +1,5 @@
 pub type GraphemeIdx = usize;
+pub type LineIdx = usize;
 pub type ByteIdx = usize;
 pub type ColIdx = usize;
 pub type Row = usize;
