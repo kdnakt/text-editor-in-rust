@@ -44,7 +44,7 @@ impl View {
         self.scroll_horizontally(col);
     }
 
-    fn scroll_vertically(&mut self, to: Row) {
+    fn scroll_vertically(&mut self, to: RowIdx) {
         let Size { height, .. } = self.size;
 
         let offset_changed = if to < self.scroll_offset.row {
@@ -61,7 +61,7 @@ impl View {
         }
     }
 
-    fn scroll_horizontally(&mut self, to: Col) {
+    fn scroll_horizontally(&mut self, to: ColIdx) {
         let Size { width, .. } = self.size;
         let offset_changed = if to < self.scroll_offset.col {
             self.scroll_offset.col = to;
@@ -77,7 +77,7 @@ impl View {
         }
     }
 
-    pub fn render_line(at: Row, line_text: &str) -> Result<(), Error> {
+    pub fn render_line(at: RowIdx, line_text: &str) -> Result<(), Error> {
         Terminal::print_row(at, line_text)
     }
 
@@ -352,7 +352,7 @@ impl UIComponent for View {
         self.scroll_location_into_view();
     }
 
-    fn draw(&mut self, origin_y: Row) -> Result<(), std::io::Error> {
+    fn draw(&mut self, origin_y: RowIdx) -> Result<(), std::io::Error> {
         let Size { height, width } = self.size;
         let end_y = origin_y.saturating_add(height);
         let top_third = height.div_ceil(3);

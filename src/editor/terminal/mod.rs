@@ -57,14 +57,14 @@ impl Terminal {
         Ok(())
     }
 
-    pub fn print_row(row: Row, line_text: &str) -> Result<(), Error> {
+    pub fn print_row(row: RowIdx, line_text: &str) -> Result<(), Error> {
         Self::move_caret_to(Position { col: 0, row })?;
         Self::clear_line()?;
         Self::print(line_text)?;
         Ok(())
     }
 
-    pub fn print_inverted_row(row: Row, line_text: &str) -> Result<(), Error> {
+    pub fn print_inverted_row(row: RowIdx, line_text: &str) -> Result<(), Error> {
         let width = Self::size()?.width;
         Self::print_row(
             row,
@@ -72,7 +72,10 @@ impl Terminal {
         )
     }
 
-    pub fn print_annotated_row(row: Row, annotated_string: &AnnotatedString) -> Result<(), Error> {
+    pub fn print_annotated_row(
+        row: RowIdx,
+        annotated_string: &AnnotatedString,
+    ) -> Result<(), Error> {
         Self::move_caret_to(Position { col: 0, row })?;
         Self::clear_line()?;
 

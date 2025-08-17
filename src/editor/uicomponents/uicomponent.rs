@@ -6,14 +6,14 @@ pub trait UIComponent {
     fn mark_redraw(&mut self, value: bool);
     fn needs_redraw(&self) -> bool;
     fn set_size(&mut self, to: Size);
-    fn draw(&mut self, origin_y: Row) -> Result<(), Error>;
+    fn draw(&mut self, origin_y: RowIdx) -> Result<(), Error>;
 
     fn resize(&mut self, to: Size) {
         self.set_size(to);
         self.mark_redraw(true);
     }
 
-    fn render(&mut self, origin_y: Row) {
+    fn render(&mut self, origin_y: RowIdx) {
         if self.needs_redraw() {
             if let Err(err) = self.draw(origin_y) {
                 #[cfg(debug_assertions)]

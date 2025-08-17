@@ -32,7 +32,7 @@ impl CommandBar {
         self.mark_redraw(true);
     }
 
-    pub fn caret_position_col(&self) -> Col {
+    pub fn caret_position_col(&self) -> ColIdx {
         let max_width = self
             .prompt
             .len()
@@ -63,7 +63,7 @@ impl UIComponent for CommandBar {
         self.size = to;
     }
 
-    fn draw(&mut self, origin_y: Row) -> Result<(), std::io::Error> {
+    fn draw(&mut self, origin_y: RowIdx) -> Result<(), std::io::Error> {
         let area_for_value = self.size.width.saturating_sub(self.prompt.len());
         let value_end = self.value.width();
         let value_start = value_end.saturating_sub(area_for_value);
