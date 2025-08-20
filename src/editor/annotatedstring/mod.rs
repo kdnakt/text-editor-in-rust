@@ -1,9 +1,6 @@
-mod annotation;
 use std::fmt::Display;
 
-use annotation::Annotation;
-pub mod annotationtype;
-pub use annotationtype::AnnotationType;
+use super::{Annotation, AnnotationType};
 mod annotatedstringiterator;
 use annotatedstringiterator::AnnotatedStringIterator;
 mod annotatedstringpart;

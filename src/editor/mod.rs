@@ -6,7 +6,12 @@ use crate::prelude::*;
 use crossterm::event::read;
 use crossterm::event::{Event, KeyEvent, KeyEventKind};
 
+mod annotation;
+use annotation::Annotation;
+
 mod annotatedstring;
+pub mod annotationtype;
+pub use annotationtype::AnnotationType;
 mod command;
 mod documentstatus;
 mod line;
