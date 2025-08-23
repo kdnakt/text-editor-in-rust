@@ -1,9 +1,12 @@
+use std::ops::Range;
 use std::{
     fs::{read_to_string, File},
     io::{Error, Write},
 };
 
-use crate::prelude::*;
+use crate::{editor::annotatedstring::AnnotatedString, prelude::*};
+
+use super::Highlighter;
 
 use super::FileInfo;
 use super::Line;
@@ -171,5 +174,16 @@ impl Buffer {
             }
         }
         None
+    }
+
+    pub fn get_highlighted_substring(
+        &self,
+        line_index: LineIdx,
+        range: Range<GraphemeIdx>,
+        highlighter: &Highlighter,
+    ) -> Option<AnnotatedString> {
+        self.lines.get(line_index).map(|line| {
+            line.get_annotated_visible_substr(range, highlighter.get_annotations(line_index))
+        })
     }
 }
