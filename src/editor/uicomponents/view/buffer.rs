@@ -13,12 +13,30 @@ use super::Line;
 
 #[derive(Default)]
 pub struct Buffer {
-    pub lines: Vec<Line>,
-    pub file_info: FileInfo,
-    pub dirty: bool,
+    lines: Vec<Line>,
+    file_info: FileInfo,
+    dirty: bool,
 }
 
 impl Buffer {
+    pub const fn is_dirty(&self) -> bool {
+        self.dirty
+    }
+
+    pub const fn get_file_info(&self) -> &FileInfo {
+        &self.file_info
+    }
+
+    pub fn grapheme_count(&self, line_index: LineIdx) -> GraphemeIdx {
+        self.lines.get(line_index).map_or(0, Line::grapheme_count)
+    }
+
+    pub fn width_until(&self, line_index: LineIdx, until: GraphemeIdx) -> ColIdx {
+        self.lines
+            .get(line_index)
+            .map_or(0, |line| line.width_until(until))
+    }
+
     pub fn load(file_name: &str) -> Result<Self, Error> {
         let contents = read_to_string(file_name)?;
         let mut lines = Vec::new();

@@ -35,8 +35,8 @@ impl View {
         DocumentStatus {
             total_lines: self.buffer.height(),
             current_line_index: self.text_location.line_index,
-            file_name: format!("{}", self.buffer.file_info),
-            is_modified: self.buffer.dirty,
+            file_name: format!("{}", self.buffer.get_file_info()),
+            is_modified: self.buffer.is_dirty(),
         }
     }
 
@@ -118,10 +118,10 @@ impl View {
 
     fn text_location_to_position(&self) -> Position {
         let row = self.text_location.line_index;
-        debug_assert!(row.saturating_sub(1) <= self.buffer.lines.len());
-        let col = self.buffer.lines.get(row).map_or(0, |line| {
-            line.width_until(self.text_location.grapheme_index)
-        });
+        debug_assert!(row.saturating_sub(1) <= self.buffer.height());
+        let col = self
+            .buffer
+            .width_until(row, self.text_location.grapheme_index);
         Position { col, row }
     }
 
@@ -135,17 +135,9 @@ impl View {
     }
 
     fn insert_char(&mut self, character: char) {
-        let old_len = self
-            .buffer
-            .lines
-            .get(self.text_location.line_index)
-            .map_or(0, Line::grapheme_count);
+        let old_len = self.buffer.grapheme_count(self.text_location.line_index);
         self.buffer.insert_char(character, self.text_location);
-        let new_len = self
-            .buffer
-            .lines
-            .get(self.text_location.line_index)
-            .map_or(0, Line::grapheme_count);
+        let new_len = self.buffer.grapheme_count(self.text_location.line_index);
         let grapheme_delta = new_len.saturating_sub(old_len);
         if grapheme_delta > 0 {
             self.handle_move_command(Move::Right);
@@ -215,12 +207,8 @@ impl View {
 
     #[allow(clippy::arithmetic_side_effects)]
     fn move_right(&mut self) {
-        let line_width = self
-            .buffer
-            .lines
-            .get(self.text_location.line_index)
-            .map_or(0, Line::grapheme_count);
-        if self.text_location.grapheme_index < line_width {
+        let grapheme_count = self.buffer.grapheme_count(self.text_location.line_index);
+        if self.text_location.grapheme_index < grapheme_count {
             self.text_location.grapheme_index += 1;
         } else {
             self.move_to_start_of_line();
@@ -230,12 +218,9 @@ impl View {
 
     fn snap_to_valid_grapheme(&mut self) {
         self.text_location.grapheme_index = self
-            .buffer
-            .lines
-            .get(self.text_location.line_index)
-            .map_or(0, |line| {
-                line.grapheme_count().min(self.text_location.grapheme_index)
-            });
+            .text_location
+            .grapheme_index
+            .min(self.buffer.grapheme_count(self.text_location.line_index));
     }
 
     fn snap_to_valid_line(&mut self) {
@@ -243,11 +228,8 @@ impl View {
     }
 
     fn move_to_end_of_line(&mut self) {
-        self.text_location.grapheme_index = self
-            .buffer
-            .lines
-            .get(self.text_location.line_index)
-            .map_or(0, Line::grapheme_count);
+        self.text_location.grapheme_index =
+            self.buffer.grapheme_count(self.text_location.line_index);
     }
 
     fn move_to_start_of_line(&mut self) {
