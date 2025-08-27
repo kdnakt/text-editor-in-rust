@@ -347,7 +347,12 @@ impl UIComponent for View {
             .as_ref()
             .and_then(|info| info.query.as_deref());
         let selected_match = query.is_some().then_some(self.text_location);
-        let highlighter = Highlighter::new(query, selected_match);
+        let mut highlighter = Highlighter::new(query, selected_match);
+
+        for current_row in 0..end_y {
+            self.buffer.highlight(current_row, &mut highlighter);
+        }
+
         for current_row in origin_y..end_y {
             let line_index = current_row
                 .saturating_sub(origin_y)

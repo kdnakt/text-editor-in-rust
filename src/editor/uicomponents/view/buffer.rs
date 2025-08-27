@@ -204,4 +204,10 @@ impl Buffer {
             line.get_annotated_visible_substr(range, highlighter.get_annotations(line_index))
         })
     }
+
+    pub fn highlight(&mut self, line_index: LineIdx, highlighter: &mut Highlighter) {
+        if let Some(line) = self.lines.get_mut(line_index) {
+            highlighter.highlight(line_index, line);
+        }
+    }
 }

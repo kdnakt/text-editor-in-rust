@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use crate::editor::Annotation;
+use crate::editor::Line;
 use crate::prelude::*;
 
 pub struct Highlighter<'a> {
@@ -20,5 +21,9 @@ impl<'a> Highlighter<'a> {
 
     pub fn get_annotations(&self, line_index: LineIdx) -> Option<&Vec<Annotation>> {
         self.highlights.get(&line_index)
+    }
+
+    pub fn highlight(&mut self, line_index: LineIdx, line: &Line) {
+        todo!("Implement syntax highlighting");
     }
 }
