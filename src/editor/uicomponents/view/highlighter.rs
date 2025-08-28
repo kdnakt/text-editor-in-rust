@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
-use crate::editor::Annotation;
 use crate::editor::Line;
+use crate::editor::{Annotation, AnnotationType};
 use crate::prelude::*;
 
 pub struct Highlighter<'a> {
@@ -24,6 +24,21 @@ impl<'a> Highlighter<'a> {
     }
 
     pub fn highlight(&mut self, line_index: LineIdx, line: &Line) {
-        todo!("Implement syntax highlighting");
+        let mut result = Vec::new();
+        Self::highlight_digits(line, &mut result);
+
+        todo!();
+    }
+
+    fn highlight_digits(line: &Line, result: &mut Vec<Annotation>) {
+        line.chars().enumerate().for_each(|(idx, ch)| {
+            if ch.is_ascii_digit() {
+                result.push(Annotation {
+                    annotation_type: AnnotationType::Digit,
+                    start: idx,
+                    end: idx.saturating_add(1),
+                });
+            }
+        });
     }
 }
