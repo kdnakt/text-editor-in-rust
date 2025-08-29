@@ -99,7 +99,7 @@ impl Line {
         result
     }
 
-    fn find_all(&self, query: &str, range: Range<ByteIdx>) -> Vec<(ByteIdx, GraphemeIdx)> {
+    pub fn find_all(&self, query: &str, range: Range<ByteIdx>) -> Vec<(ByteIdx, GraphemeIdx)> {
         let end_byte_index = range.end;
         let start_byte_index = range.start;
 

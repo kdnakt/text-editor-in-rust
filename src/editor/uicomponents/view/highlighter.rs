@@ -26,7 +26,7 @@ impl<'a> Highlighter<'a> {
     pub fn highlight(&mut self, line_index: LineIdx, line: &Line) {
         let mut result = Vec::new();
         Self::highlight_digits(line, &mut result);
-
+        self.highlight_matched_words(line, &mut result);
         todo!();
     }
 
@@ -40,5 +40,22 @@ impl<'a> Highlighter<'a> {
                 });
             }
         });
+    }
+
+    fn highlight_matched_words(&self, line: &Line, result: &mut Vec<Annotation>) {
+        if let Some(matched_word) = self.matched_word {
+            if matched_word.is_empty() {
+                return;
+            }
+            line.find_all(matched_word, 0..line.len())
+                .iter()
+                .for_each(|(start, _)| {
+                    result.push(Annotation {
+                        annotation_type: AnnotationType::Match,
+                        start: *start,
+                        end: start.saturating_add(matched_word.len()),
+                    });
+                });
+        }
     }
 }
