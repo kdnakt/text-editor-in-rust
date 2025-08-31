@@ -122,7 +122,7 @@ impl Buffer {
         self.lines.is_empty()
     }
 
-    pub fn height(&self) -> usize {
+    pub fn height(&self) -> LineIdx {
         self.lines.len()
     }
 
