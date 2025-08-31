@@ -32,7 +32,7 @@ impl<'a> Highlighter<'a> {
                 self.highlight_selected_match(&mut result);
             }
         }
-        todo!();
+        self.highlights.insert(line_index, result);
     }
 
     fn highlight_digits(line: &Line, result: &mut Vec<Annotation>) {
