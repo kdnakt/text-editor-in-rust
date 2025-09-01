@@ -4,6 +4,7 @@ use crate::editor::Line;
 use crate::editor::{Annotation, AnnotationType};
 use crate::prelude::*;
 
+#[derive(Default)]
 pub struct Highlighter<'a> {
     matched_word: Option<&'a str>,
     selected_match: Option<Location>,
