@@ -14,6 +14,8 @@ pub mod annotationtype;
 pub use annotationtype::AnnotationType;
 mod command;
 mod documentstatus;
+mod filetype;
+use filetype::FileType;
 mod line;
 mod terminal;
 mod uicomponents;
