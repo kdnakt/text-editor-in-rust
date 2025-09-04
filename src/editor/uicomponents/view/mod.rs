@@ -351,7 +351,7 @@ impl UIComponent for View {
         let selected_match = query.is_some().then_some(self.text_location);
         let mut highlighter = Highlighter::new(query, selected_match);
 
-        for current_row in 0..end_y {
+        for current_row in 0..end_y.saturating_add(scroll_top) {
             self.buffer.highlight(current_row, &mut highlighter);
         }
 
