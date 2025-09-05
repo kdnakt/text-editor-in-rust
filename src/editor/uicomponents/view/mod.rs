@@ -106,11 +106,15 @@ impl View {
     }
 
     pub fn save(&mut self) -> Result<(), Error> {
-        self.buffer.save()
+        self.buffer.save()?;
+        self.mark_redraw(true);
+        Ok(())
     }
 
     pub fn save_as(&mut self, file_name: &str) -> Result<(), Error> {
-        self.buffer.save_as(file_name)
+        self.buffer.save_as(file_name)?;
+        self.mark_redraw(true);
+        Ok(())
     }
 
     pub fn caret_position(&self) -> Position {
