@@ -353,7 +353,11 @@ impl UIComponent for View {
             .as_ref()
             .and_then(|info| info.query.as_deref());
         let selected_match = query.is_some().then_some(self.text_location);
-        let mut highlighter = Highlighter::new(query, selected_match);
+        let mut highlighter = Highlighter::new(
+            query,
+            selected_match,
+            self.buffer.get_file_info().get_file_type(),
+        );
 
         for current_row in 0..end_y.saturating_add(scroll_top) {
             self.buffer.highlight(current_row, &mut highlighter);

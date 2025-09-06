@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use crate::editor::filetype::FileType;
 use crate::editor::Line;
 use crate::editor::{Annotation, AnnotationType};
 use crate::prelude::*;
@@ -12,7 +13,11 @@ pub struct Highlighter<'a> {
 }
 
 impl<'a> Highlighter<'a> {
-    pub fn new(matched_word: Option<&'a str>, selected_match: Option<Location>) -> Self {
+    pub fn new(
+        matched_word: Option<&'a str>,
+        selected_match: Option<Location>,
+        file_type: FileType,
+    ) -> Self {
         Highlighter {
             matched_word,
             selected_match,
