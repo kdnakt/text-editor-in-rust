@@ -5,6 +5,11 @@ use crate::editor::Line;
 use crate::editor::{Annotation, AnnotationType};
 use crate::prelude::*;
 
+mod rustsyntaxhighlighter;
+use rustsyntaxhighlighter::RustSyntaxHighlighter;
+mod syntaxhighlighter;
+use syntaxhighlighter::SyntaxHighlighter;
+
 #[derive(Default)]
 pub struct Highlighter<'a> {
     matched_word: Option<&'a str>,
