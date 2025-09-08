@@ -9,12 +9,20 @@ mod rustsyntaxhighlighter;
 use rustsyntaxhighlighter::RustSyntaxHighlighter;
 mod syntaxhighlighter;
 use syntaxhighlighter::SyntaxHighlighter;
+mod searchresulthighlighter;
+use searchresulthighlighter::SearchResultHighlighter;
+
+fn create_syntax_highlighter(file_type: FileType) -> Option<Box<dyn SyntaxHighlighter>> {
+    match file_type {
+        FileType::Rust => Some(Box::<RustSyntaxHighlighter>::default()),
+        FileType::Text => None,
+    }
+}
 
 #[derive(Default)]
 pub struct Highlighter<'a> {
-    matched_word: Option<&'a str>,
-    selected_match: Option<Location>,
-    highlights: HashMap<LineIdx, Vec<Annotation>>,
+    synttax_highlighter: Option<Box<dyn SyntaxHighlighter>>,
+    search_result_highlighter: Option<SearchResultHighlighter<'a>>,
 }
 
 impl<'a> Highlighter<'a> {
@@ -23,71 +31,35 @@ impl<'a> Highlighter<'a> {
         selected_match: Option<Location>,
         file_type: FileType,
     ) -> Self {
+        let search_result_highlighter =
+            matched_word.map(|word| SearchResultHighlighter::new(word, selected_match));
         Highlighter {
-            matched_word,
-            selected_match,
-            highlights: HashMap::new(),
+            synttax_highlighter: create_syntax_highlighter(file_type),
+            search_result_highlighter,
         }
     }
 
-    pub fn get_annotations(&self, line_index: LineIdx) -> Option<&Vec<Annotation>> {
-        self.highlights.get(&line_index)
+    pub fn get_annotations(&self, line_index: LineIdx) -> Vec<Annotation> {
+        let mut result = Vec::new();
+        if let Some(syntax_highlighter) = &self.synttax_highlighter {
+            if let Some(annotations) = syntax_highlighter.get_annotations(line_index) {
+                result.extend(annotations.iter().copied());
+            }
+        }
+        if let Some(search_result_highlighter) = &self.search_result_highlighter {
+            if let Some(annotations) = search_result_highlighter.get_annotations(line_index) {
+                result.extend(annotations.iter().copied());
+            }
+        }
+        result
     }
 
     pub fn highlight(&mut self, line_index: LineIdx, line: &Line) {
-        let mut result = Vec::new();
-        Self::highlight_digits(line, &mut result);
-        self.highlight_matched_words(line, &mut result);
-        if let Some(selected_match) = self.selected_match {
-            if selected_match.line_index == line_index {
-                self.highlight_selected_match(&mut result);
-            }
+        if let Some(syntax_highlighter) = &mut self.synttax_highlighter {
+            syntax_highlighter.highlight(line_index, line);
         }
-        self.highlights.insert(line_index, result);
-    }
-
-    fn highlight_digits(line: &Line, result: &mut Vec<Annotation>) {
-        line.chars().enumerate().for_each(|(idx, ch)| {
-            if ch.is_ascii_digit() {
-                result.push(Annotation {
-                    annotation_type: AnnotationType::Digit,
-                    start: idx,
-                    end: idx.saturating_add(1),
-                });
-            }
-        });
-    }
-
-    fn highlight_matched_words(&self, line: &Line, result: &mut Vec<Annotation>) {
-        if let Some(matched_word) = self.matched_word {
-            if matched_word.is_empty() {
-                return;
-            }
-            line.find_all(matched_word, 0..line.len())
-                .iter()
-                .for_each(|(start, _)| {
-                    result.push(Annotation {
-                        annotation_type: AnnotationType::Match,
-                        start: *start,
-                        end: start.saturating_add(matched_word.len()),
-                    });
-                });
-        }
-    }
-
-    fn highlight_selected_match(&self, result: &mut Vec<Annotation>) {
-        if let Some(selected_match) = self.selected_match {
-            if let Some(matched_word) = self.matched_word {
-                if matched_word.is_empty() {
-                    return;
-                }
-                let start = selected_match.grapheme_index;
-                result.push(Annotation {
-                    annotation_type: AnnotationType::SelectedMatch,
-                    start,
-                    end: start.saturating_add(matched_word.len()),
-                });
-            }
+        if let Some(search_result_highlighter) = &mut self.search_result_highlighter {
+            search_result_highlighter.highlight(line_index, line);
         }
     }
 }

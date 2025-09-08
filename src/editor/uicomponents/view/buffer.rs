@@ -201,7 +201,7 @@ impl Buffer {
         highlighter: &Highlighter,
     ) -> Option<AnnotatedString> {
         self.lines.get(line_index).map(|line| {
-            line.get_annotated_visible_substr(range, highlighter.get_annotations(line_index))
+            line.get_annotated_visible_substr(range, Some(&highlighter.get_annotations(line_index)))
         })
     }
 
