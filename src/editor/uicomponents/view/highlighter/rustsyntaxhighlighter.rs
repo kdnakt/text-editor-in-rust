@@ -16,6 +16,10 @@ fn is_valid_number(word: &str) -> bool {
         return false;
     }
 
+    if is_numeric_literal(word) {
+        return true;
+    }
+
     let mut chars = word.chars();
     if let Some(first_char) = chars.next() {
         if !first_char.is_ascii_digit() {
@@ -59,6 +63,24 @@ fn is_valid_number(word: &str) -> bool {
     }
 
     prev_was_digit
+}
+
+fn is_numeric_literal(word: &str) -> bool {
+    if word.len() < 3 {
+        return false;
+    }
+    let mut chars = word.chars();
+    if chars.next() != Some('0') {
+        return false;
+    }
+    let base = match chars.next() {
+        Some('x') | Some('X') => 16,
+        Some('o') | Some('O') => 8,
+        Some('b') | Some('B') => 2,
+        _ => return false,
+    };
+
+    chars.all(|char| char.is_digit(base))
 }
 
 impl SyntaxHighlighter for RustSyntaxHighlighter {
