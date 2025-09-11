@@ -18,7 +18,7 @@ fn is_valid_number(word: &str) -> bool {
 
     let mut chars = word.chars();
     if let Some(first_char) = chars.next() {
-        if first_char.is_ascii_digit() {
+        if !first_char.is_ascii_digit() {
             return false;
         }
     }
@@ -45,7 +45,7 @@ fn is_valid_number(word: &str) -> bool {
                 prev_was_digit = false;
             }
             'e' | 'E' => {
-                if seen_e || prev_was_digit {
+                if seen_e || !prev_was_digit {
                     return false;
                 }
                 seen_e = true;
