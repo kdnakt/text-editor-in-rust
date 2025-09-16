@@ -13,7 +13,6 @@ use graphemewidth::GraphemeWidth;
 use textfragment::TextFragment;
 
 use super::annotatedstring::AnnotatedString;
-use super::AnnotationType;
 
 #[derive(Default, Clone)]
 pub struct Line {

@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 
 use crate::editor::filetype::FileType;
 use crate::editor::Line;
