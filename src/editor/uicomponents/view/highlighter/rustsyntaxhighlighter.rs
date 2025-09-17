@@ -148,9 +148,9 @@ fn is_numeric_literal(word: &str) -> bool {
         return false;
     }
     let base = match chars.next() {
-        Some('x') | Some('X') => 16,
-        Some('o') | Some('O') => 8,
-        Some('b') | Some('B') => 2,
+        Some('x' | 'X') => 16,
+        Some('o' | 'O') => 8,
+        Some('b' | 'B') => 2,
         _ => return false,
     };
 

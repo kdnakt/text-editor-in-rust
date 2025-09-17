@@ -68,7 +68,7 @@ impl Terminal {
         let width = Self::size()?.width;
         Self::print_row(
             row,
-            &format!("{}{:width$.width$}{}", Reverse, line_text, Reset),
+            &format!("{Reverse}{line_text:width$.width$}{Reset}"),
         )
     }
 
