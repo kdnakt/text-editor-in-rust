@@ -179,25 +179,6 @@ impl SyntaxHighlighter for RustSyntaxHighlighter {
                 }
             }
         }
-        for (start_idx, word) in line.split_word_bound_indices() {
-            let mut annotation_type = None;
-            if is_valid_number(word) {
-                annotation_type = Some(AnnotationType::Number);
-            } else if is_keyword(word) {
-                annotation_type = Some(AnnotationType::Keyword);
-            } else if is_type(word) {
-                annotation_type = Some(AnnotationType::Type);
-            } else if is_known_value(word) {
-                annotation_type = Some(AnnotationType::KnownValue);
-            }
-            if let Some(annotation_type) = annotation_type {
-                result.push(Annotation {
-                    annotation_type,
-                    start: start_idx,
-                    end: start_idx.saturating_add(word.len()),
-                });
-            }
-        }
         self.highlights.insert(idx, result);
     }
 
