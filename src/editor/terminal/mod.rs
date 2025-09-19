@@ -66,10 +66,7 @@ impl Terminal {
 
     pub fn print_inverted_row(row: RowIdx, line_text: &str) -> Result<(), Error> {
         let width = Self::size()?.width;
-        Self::print_row(
-            row,
-            &format!("{Reverse}{line_text:width$.width$}{Reset}"),
-        )
+        Self::print_row(row, &format!("{Reverse}{line_text:width$.width$}{Reset}"))
     }
 
     pub fn print_annotated_row(

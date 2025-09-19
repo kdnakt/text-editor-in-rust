@@ -1,4 +1,3 @@
-
 use crate::editor::filetype::FileType;
 use crate::editor::Line;
 use crate::editor::{Annotation, AnnotationType};

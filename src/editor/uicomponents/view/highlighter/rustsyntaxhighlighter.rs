@@ -160,6 +160,25 @@ fn is_numeric_literal(word: &str) -> bool {
 impl SyntaxHighlighter for RustSyntaxHighlighter {
     fn highlight(&mut self, idx: LineIdx, line: &Line) {
         let mut result = Vec::new();
+        let mut iterator = line.split_word_bound_indices().peekable();
+        while let Some((start_idx, _)) = iterator.next() {
+            let remainder = &line[start_idx..];
+            if let Some(mut annotation) = annotate_char(remainder)
+                .or_else(|| annotate_number(remainder))
+                .or_else(|| annotate_keyword(remainder))
+                .or_else(|| annotate_type(remainder))
+                .or_else(|| annotate_known_value(remainder))
+            {
+                annotation.shift(start_idx);
+                result.push(annotation);
+                while let Some(&(next_start_idx, _)) = iterator.peek() {
+                    if annotation.end <= next_start_idx {
+                        break;
+                    }
+                    iterator.next();
+                }
+            }
+        }
         for (start_idx, word) in line.split_word_bound_indices() {
             let mut annotation_type = None;
             if is_valid_number(word) {
@@ -185,4 +204,38 @@ impl SyntaxHighlighter for RustSyntaxHighlighter {
     fn get_annotations(&self, idx: LineIdx) -> Option<&Vec<Annotation>> {
         self.highlights.get(&idx)
     }
+}
+
+fn annotate_char(string: &str) -> Option<Annotation> {
+    let mut iter = string.split_word_bound_indices().peekable();
+    if let Some((_, "\'")) = iter.next() {
+        if let Some((_, "\\")) = iter.peek() {
+            iter.next();
+        }
+        iter.next();
+        if let Some((idx, "\'")) = iter.next() {
+            return Some(Annotation {
+                annotation_type: AnnotationType::Char,
+                start: 0,
+                end: idx.saturating_add(1),
+            });
+        }
+    }
+    None
+}
+
+fn annotate_number(string: &str) -> Option<Annotation> {
+    todo!()
+}
+
+fn annotate_keyword(string: &str) -> Option<Annotation> {
+    todo!()
+}
+
+fn annotate_type(string: &str) -> Option<Annotation> {
+    todo!()
+}
+
+fn annotate_known_value(string: &str) -> Option<Annotation> {
+    todo!()
 }
