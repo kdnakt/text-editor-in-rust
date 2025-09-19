@@ -225,17 +225,37 @@ fn annotate_char(string: &str) -> Option<Annotation> {
 }
 
 fn annotate_number(string: &str) -> Option<Annotation> {
-    todo!()
+    annotate_next_word(string, AnnotationType::Number, is_valid_number)
 }
 
 fn annotate_keyword(string: &str) -> Option<Annotation> {
-    todo!()
+    annotate_next_word(string, AnnotationType::Keyword, is_keyword)
 }
 
 fn annotate_type(string: &str) -> Option<Annotation> {
-    todo!()
+    annotate_next_word(string, AnnotationType::Type, is_type)
 }
 
 fn annotate_known_value(string: &str) -> Option<Annotation> {
-    todo!()
+    annotate_next_word(string, AnnotationType::KnownValue, is_known_value)
+}
+
+fn annotate_next_word<F>(
+    string: &str,
+    annotation_type: AnnotationType,
+    validator: F,
+) -> Option<Annotation>
+where
+    F: Fn(&str) -> bool,
+{
+    if let Some(word) = string.split_word_bounds().next() {
+        if validator(word) {
+            return Some(Annotation {
+                annotation_type,
+                start: 0,
+                end: word.len(),
+            });
+        }
+    }
+    None
 }
